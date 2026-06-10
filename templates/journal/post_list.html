@@ -1,0 +1,52 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Journal | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">Journal</p>
+    <h1>Fil d'actualites</h1>
+    <p>Les publications de l'administration et les annonces de la communaute.</p>
+</section>
+
+{% if user.is_staff %}
+<section class="actions-bar">
+    <a class="btn" href="{% url 'journal:create' %}">Publier une publication</a>
+</section>
+{% endif %}
+
+<section class="feed-grid">
+    {% for post in posts %}
+        <article class="post-card">
+            <header class="post-header">
+                <div>
+                    <p class="eyebrow">{{ post.get_category_display }}</p>
+                    <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+                </div>
+                <span class="muted">{{ post.created_at|date:'d M Y' }}</span>
+            </header>
+            {% if post.image_file %}
+                <div class="post-media">
+                    <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+                </div>
+            {% elif post.image_url %}
+                <div class="post-media">
+                    <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                </div>
+            {% endif %}
+            {% if post.video_file %}
+                <div class="post-media video-media">
+                    <video controls src="{{ post.video_file.url }}"></video>
+                </div>
+            {% endif %}
+            <p>{{ post.summary|default:post.content|truncatewords:30 }}</p>
+            <div class="post-meta">
+                <span>{{ post.likes_count }} like{% if post.likes_count != 1 %}s{% endif %}</span>
+                {% if post.event_date %}<span>Le {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
+            </div>
+        </article>
+    {% empty %}
+        <p class="empty">Aucune publication n'a encore ete partagee.</p>
+    {% endfor %}
+</section>
+{% endblock %}

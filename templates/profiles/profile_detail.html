@@ -1,0 +1,62 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}{{ profile.display_name }} | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="detail-layout">
+    <article class="detail-main">
+        <div class="profile-header">
+            {% if profile.photo_file %}
+                <img class="profile-image" src="{{ profile.photo_file.url }}" alt="Photo de {{ profile.display_name }}">
+            {% elif profile.photo_url %}
+                <img class="profile-image" src="{{ profile.photo_url }}" alt="Photo de {{ profile.display_name }}">
+            {% endif %}
+            <div class="profile-summary">
+                <p class="eyebrow">{{ profile.get_status_display }}</p>
+                <h1>{{ profile.display_name }}</h1>
+                <p class="lead">{{ profile.job_title|default:'Profil professionnel' }}</p>
+                {% if profile.current_company %}<p><strong>Entreprise :</strong> {{ profile.current_company }}</p>{% endif %}
+                {% if profile.industry %}<p><strong>Secteur :</strong> {{ profile.industry }}</p>{% endif %}
+                {% if profile.location %}<p><strong>Localisation :</strong> {{ profile.location }}</p>{% endif %}
+            </div>
+        </div>
+
+        {% if profile.bio %}
+            <section class="section-gap">
+                <h2>À propos</h2>
+                <p>{{ profile.bio|linebreaksbr }}</p>
+            </section>
+        {% endif %}
+
+        <section class="section-gap">
+            <h2>Compétences</h2>
+            <div class="tags">
+                {% for skill in profile.skills.all %}
+                    <span>{{ skill.name }}</span>
+                {% empty %}
+                    <span>Compétences non renseignées</span>
+                {% endfor %}
+            </div>
+        </section>
+    </article>
+
+    <aside class="side-panel">
+        <section>
+            <h2>Contact</h2>
+            {% if profile.public_phone %}<p><strong>Telephone :</strong> {{ profile.public_phone }}</p>{% endif %}
+            {% if profile.email %}<p><strong>Email :</strong> <a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>{% endif %}
+            {% if profile.linkedin_url %}<p><strong>LinkedIn :</strong> <a href="{{ profile.linkedin_url }}" target="_blank">Voir le profil</a></p>{% endif %}
+            {% if profile.cv_file %}<p><strong>CV :</strong> <a href="{{ profile.cv_file.url }}" target="_blank">Télécharger</a></p>{% endif %}
+        </section>
+
+        <section class="section-gap">
+            <h2>Formation</h2>
+            {% if profile.education_level %}
+                <p>{{ profile.education_level }}</p>
+            {% else %}
+                <p>Non renseigné</p>
+            {% endif %}
+        </section>
+    </aside>
+</section>
+{% endblock %}

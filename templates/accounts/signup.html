@@ -1,0 +1,67 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Inscription | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-panel">
+        <p class="eyebrow">Membre</p>
+        <h1>Creer mon profil professionnel</h1>
+        <p>Inscrivez-vous et commencez à construire votre profil comme sur LinkedIn : photo, titre, compétences et CV.</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+            {% if form.errors %}
+                <div class="form-errors">
+                    {% for field, errs in form.errors.items %}
+                        {% for err in errs %}
+                            <p>{{ err }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <fieldset>
+                <legend>Compte</legend>
+                <p>{{ form.username.label_tag }}{{ form.username }}</p>
+                <p>{{ form.email.label_tag }}{{ form.email }}</p>
+                <p>{{ form.password1.label_tag }}{{ form.password1 }}</p>
+                <p>{{ form.password2.label_tag }}{{ form.password2 }}</p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Identité</legend>
+                <p>{{ form.first_name.label_tag }}{{ form.first_name }}</p>
+                <p>{{ form.last_name.label_tag }}{{ form.last_name }}</p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Profil professionnel</legend>
+                <p>{{ form.job_title.label_tag }}{{ form.job_title }}</p>
+                <p>{{ form.current_company.label_tag }}{{ form.current_company }}</p>
+                <p>{{ form.industry.label_tag }}{{ form.industry }}</p>
+                <p>{{ form.location.label_tag }}{{ form.location }}</p>
+                <p>{{ form.status.label_tag }}{{ form.status }}</p>
+                <p>{{ form.education_level.label_tag }}{{ form.education_level }}</p>
+                <p>{{ form.skills_text.label_tag }}{{ form.skills_text }}</p>
+                <p>{{ form.bio.label_tag }}{{ form.bio }}</p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Contact et documents</legend>
+                <p>{{ form.phone.label_tag }}{{ form.phone }}</p>
+                <p>{{ form.whatsapp.label_tag }}{{ form.whatsapp }}</p>
+                <p>{{ form.linkedin_url.label_tag }}{{ form.linkedin_url }}</p>
+                <p>{{ form.photo_file.label_tag }}{{ form.photo_file }}</p>
+                <p>{{ form.photo_url.label_tag }}{{ form.photo_url }}</p>
+                <p>{{ form.cv_file.label_tag }}{{ form.cv_file }}</p>
+                <p>{{ form.is_public.label_tag }}{{ form.is_public }}</p>
+            </fieldset>
+
+            <button class="btn" type="submit">Creer mon compte</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,40 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Profils | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">Talents de la communaute</p>
+    <h1>Profils professionnels</h1>
+    <p>Recherchez un membre par nom, metier, competence, niveau ou localisation.</p>
+</section>
+
+<form class="search-bar" method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="Ex: informatique, couture, comptabilite">
+    <button class="btn" type="submit">Rechercher</button>
+</form>
+
+<section class="cards-grid">
+    {% for profile in profiles %}
+        <article class="card">
+            {% if profile.photo_file %}
+                <img class="profile-photo" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}">
+            {% elif profile.photo_url %}
+                <img class="profile-photo" src="{{ profile.photo_url }}" alt="{{ profile.display_name }}">
+            {% endif %}
+            <p class="eyebrow">{{ profile.get_status_display }}</p>
+            <h2><a href="{{ profile.get_absolute_url }}">{{ profile.display_name }}</a></h2>
+            <p>{{ profile.job_title|default:'Profil professionnel' }}</p>
+            <div class="tags">
+                {% for skill in profile.skills.all %}
+                    <span>{{ skill.name }}</span>
+                {% empty %}
+                    <span>Competences a completer</span>
+                {% endfor %}
+            </div>
+        </article>
+    {% empty %}
+        <p class="empty">Aucun profil public pour le moment.</p>
+    {% endfor %}
+</section>
+{% endblock %}

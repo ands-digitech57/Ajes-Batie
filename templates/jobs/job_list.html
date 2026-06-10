@@ -1,0 +1,35 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Offres | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">Opportunites</p>
+    <h1>Offres d'emploi</h1>
+    <p>Les offres sont publiées par les administrateurs ou les responsables autorisés.</p>
+    {% if user.is_authenticated and user.is_staff %}
+        <a class="btn" href="{% url 'jobs:create' %}">Publier une offre</a>
+    {% endif %}
+</section>
+
+<form class="search-bar" method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="Ex: stage, Douala, electricien">
+    <button class="btn" type="submit">Rechercher</button>
+</form>
+
+<section class="list-stack">
+    {% for job in jobs %}
+        <article class="card">
+            <p class="eyebrow">{{ job.get_contract_type_display }}</p>
+            <h2><a href="{{ job.get_absolute_url }}">{{ job.title }}</a></h2>
+            <p class="meta">{{ job.company_name }}{% if job.location %} • {{ job.location }}{% endif %}{% if job.deadline %} • candidature avant {{ job.deadline }}{% endif %}</p>
+            <p>{{ job.description|truncatewords:26 }}</p>
+            <div class="card-actions">
+                <a class="btn secondary" href="{{ job.get_absolute_url }}">Voir l'offre</a>
+            </div>
+        </article>
+    {% empty %}
+        <p class="empty">Aucune offre active pour le moment.</p>
+    {% endfor %}
+</section>
+{% endblock %}

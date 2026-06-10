@@ -1,0 +1,44 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Connexion | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-panel">
+        <p class="eyebrow">Membre</p>
+        <h1>Connexion</h1>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+            <div class="form-group password-field">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                <button type="button" class="password-toggle" id="togglePassword" aria-label="Afficher le mot de passe">👁</button>
+                {{ form.password.errors }}
+            </div>
+            <button class="btn" type="submit">Se connecter</button>
+            <p class="muted"><a href="{% url 'accounts:password_reset' %}">Mot de passe oublié ?</a></p>
+        </form>
+        <p class="muted">Pas encore de compte ? <a href="{% url 'accounts:signup' %}">Inscrivez-vous</a>.</p>
+    </div>
+</section>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#id_password');
+        if (!toggle || !passwordInput) return;
+
+        toggle.addEventListener('click', function () {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggle.textContent = isPassword ? '🙈' : '👁';
+            toggle.setAttribute('aria-label', isPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+        });
+    });
+</script>
+{% endblock %}

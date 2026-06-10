@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">Notifications</p>
+    <h1>Mes notifications</h1>
+    <p>Retrouvez les annonces, offres et publications revelees depuis votre derniere connexion.</p>
+</section>
+
+<section class="list-stack">
+    {% for notification in notifications %}
+        <article class="card notification-card{% if not notification.is_read %} unread{% endif %}">
+            <div class="notification-header">
+                <strong>{{ notification.title }}</strong>
+                <span class="muted">{{ notification.created_at|date:'d M Y H:i' }}</span>
+            </div>
+            <p>{{ notification.message }}</p>
+            {% if notification.link %}
+                <a class="btn secondary" href="{{ notification.link }}">Voir</a>
+            {% endif %}
+        </article>
+    {% empty %}
+        <p class="empty">Aucune notification pour le moment.</p>
+    {% endfor %}
+</section>
+{% endblock %}

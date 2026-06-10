@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Publier une publication | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-panel">
+        <p class="eyebrow">Administration</p>
+        <h1>Publier une publication</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn" type="submit">Publier</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

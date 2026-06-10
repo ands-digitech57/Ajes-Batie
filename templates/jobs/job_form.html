@@ -1,0 +1,18 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Publier une offre | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-panel">
+        <p class="eyebrow">Recruteur</p>
+        <h1>Publier une offre</h1>
+        <p>Remplissez le formulaire. L'offre sera visible automatiquement.</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn" type="submit">Publier l'offre</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Modifier mon profil | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-panel">
+        <p class="eyebrow">Profil public</p>
+        <h1>Modifier mon profil</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <fieldset>
+                <legend>Photo et identité</legend>
+                {% if profile.photo_file %}
+                    <div class="current-photo">
+                        <img class="profile-photo" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}">
+                    </div>
+                {% endif %}
+                <p>{{ form.photo_file.label_tag }}{{ form.photo_file }}</p>
+                <p>{{ form.photo_url.label_tag }}{{ form.photo_url }}</p>
+                <p>{{ form.first_name.label_tag }}{{ form.first_name }}</p>
+                <p>{{ form.last_name.label_tag }}{{ form.last_name }}</p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Profil professionnel</legend>
+                <p>{{ form.job_title.label_tag }}{{ form.job_title }}</p>
+                <p>{{ form.current_company.label_tag }}{{ form.current_company }}</p>
+                <p>{{ form.industry.label_tag }}{{ form.industry }}</p>
+                <p>{{ form.location.label_tag }}{{ form.location }}</p>
+                <p>{{ form.status.label_tag }}{{ form.status }}</p>
+                <p>{{ form.education_level.label_tag }}{{ form.education_level }}</p>
+                <p>{{ form.skills_text.label_tag }}{{ form.skills_text }}</p>
+                <p>{{ form.bio.label_tag }}{{ form.bio }}</p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Contact et CV</legend>
+                <p>{{ form.email.label_tag }}{{ form.email }}</p>
+                <p>{{ form.phone.label_tag }}{{ form.phone }}</p>
+                <p>{{ form.whatsapp.label_tag }}{{ form.whatsapp }}</p>
+                <p>{{ form.linkedin_url.label_tag }}{{ form.linkedin_url }}</p>
+                <p>{{ form.cv_file.label_tag }}{{ form.cv_file }}</p>
+                {% if profile.cv_file %}
+                    <p><strong>CV actuel :</strong> <a href="{{ profile.cv_file.url }}" target="_blank">Télécharger</a></p>
+                {% endif %}
+                <p>{{ form.is_public.label_tag }}{{ form.is_public }}</p>
+            </fieldset>
+
+            <button class="btn" type="submit">Enregistrer</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

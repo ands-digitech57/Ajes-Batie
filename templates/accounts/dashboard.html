@@ -1,0 +1,72 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Mon espace | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="page-title">
+    <p class="eyebrow">Espace membre</p>
+    <h1>Bonjour {{ user.first_name|default:user.username }}</h1>
+    <p>Gerez votre profil public et consultez vos candidatures.</p>
+</section>
+
+{% if new_jobs_count or new_posts_count %}
+    <section class="notification-banner">
+        {% if new_jobs_count %}<p>{{ new_jobs_count }} nouvelle{% if new_jobs_count > 1 %}s{% endif %} offre{% if new_jobs_count > 1 %}s{% endif %} publiée{% if new_jobs_count > 1 %}s{% endif %}.</p>{% endif %}
+        {% if new_posts_count %}<p>{{ new_posts_count }} nouvel{% if new_posts_count > 1 %}s{% endif %} article{% if new_posts_count > 1 %}s{% endif %} ajouté{% if new_posts_count > 1 %}s{% endif %} au journal.</p>{% endif %}
+    </section>
+{% endif %}
+
+<section class="grid-2">
+    <article class="card">
+        <h2>Votre profil</h2>
+        {% if profile.photo_file %}
+            <img class="profile-photo" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}">
+        {% elif profile.photo_url %}
+            <img class="profile-photo" src="{{ profile.photo_url }}" alt="{{ profile.display_name }}">
+        {% endif %}
+        <p class="eyebrow">{{ profile.get_status_display }}</p>
+        <h3>{{ profile.display_name }}</h3>
+        <p>{{ profile.job_title|default:'Ajoutez votre metier, vos competences et vos contacts.' }}</p>
+        {% if profile.current_company %}<p><strong>Entreprise :</strong> {{ profile.current_company }}</p>{% endif %}
+        {% if profile.location %}<p><strong>Localisation :</strong> {{ profile.location }}</p>{% endif %}
+        <div class="actions">
+            <a class="btn" href="{% url 'profiles:edit' %}">Modifier mon profil</a>
+            {% if profile.is_public %}<a class="btn secondary" href="{{ profile.get_absolute_url }}">Voir public</a>{% endif %}
+        </div>
+        {% if unread_notifications_count %}
+            <div class="notification-summary">
+                <p><strong>{{ unread_notifications_count }}</strong> notification{% if unread_notifications_count > 1 %}s{% endif %} non lue{% if unread_notifications_count > 1 %}s{% endif %}.</p>
+                <a class="btn secondary" href="{% url 'accounts:notifications' %}">Voir mes notifications</a>
+            </div>
+        {% endif %}
+    </article>
+    <article class="card">
+        <h2>Accès rapides</h2>
+        <p>Accédez rapidement aux offres d'emploi et au journal de la communauté.</p>
+        <div class="actions">
+            <a class="btn secondary" href="{% url 'jobs:list' %}">Voir les offres</a>
+            {% if user.is_staff %}
+                <a class="btn secondary" href="{% url 'jobs:create' %}">Publier une offre</a>
+            {% endif %}
+            <a class="btn secondary" href="{% url 'journal:list' %}">Voir le journal</a>
+        </div>
+    </article>
+</section>
+
+<section class="section-gap">
+    <div class="section-heading">
+        <h2>Mes candidatures</h2>
+        <span class="muted">{{ applications|length }} candidature{% if applications|length != 1 %}s{% endif %}</span>
+    </div>
+    <section class="list-stack">
+        {% for application in applications %}
+            <article class="card">
+                <h3><a href="{{ application.job_offer.get_absolute_url }}">{{ application.job_offer.title }}</a></h3>
+                <p>{{ application.job_offer.company_name }} - {{ application.created_at }}</p>
+            </article>
+        {% empty %}
+            <p class="empty">Vous n'avez pas encore postule a une offre.</p>
+        {% endfor %}
+    </section>
+</section>
+{% endblock %}

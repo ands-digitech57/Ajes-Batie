@@ -1,0 +1,52 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Accueil | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Plateforme communautaire</p>
+    <h1>Connecter les talents de la communaute aux opportunites</h1>
+    <p>Ajes Connect permet aux membres de presenter leurs competences, aux elites de consulter les profils et de publier des offres.</p>
+    <div class="actions">
+        <a class="btn" href="{% url 'profiles:list' %}">Voir les profils</a>
+        <a class="btn secondary" href="{% url 'jobs:create' %}">Publier une offre</a>
+    </div>
+</section>
+
+<section class="stats">
+    <div><strong>{{ profile_count }}</strong><span>Profils publics</span></div>
+    <div><strong>{{ job_count }}</strong><span>Offres actives</span></div>
+</section>
+
+<section class="grid-2">
+    <div>
+        <div class="section-heading">
+            <h2>Offres recentes</h2>
+            <a href="{% url 'jobs:list' %}">Tout voir</a>
+        </div>
+        {% for job in latest_jobs %}
+            <article class="card">
+                <h3><a href="{{ job.get_absolute_url }}">{{ job.title }}</a></h3>
+                <p>{{ job.company_name }}{% if job.location %} - {{ job.location }}{% endif %}</p>
+            </article>
+        {% empty %}
+            <p class="empty">Aucune offre pour le moment.</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <div class="section-heading">
+            <h2>Journal</h2>
+            <a href="{% url 'journal:list' %}">Tout voir</a>
+        </div>
+        {% for post in latest_posts %}
+            <article class="card">
+                <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                <p>{{ post.summary|default:post.content|truncatewords:18 }}</p>
+            </article>
+        {% empty %}
+            <p class="empty">Aucun article pour le moment.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

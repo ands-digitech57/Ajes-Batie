@@ -1,0 +1,76 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} | Ajes Connect{% endblock %}
+
+{% block content %}
+<article class="post-detail">
+    <header class="post-detail-header">
+        <div>
+            <p class="eyebrow">{{ post.get_category_display }}</p>
+            <h1>{{ post.title }}</h1>
+            {% if post.author %}
+                <p class="muted">Publié par {{ post.author.get_full_name|default:post.author.username }}</p>
+            {% else %}
+                <p class="muted">Publié par l'administration</p>
+            {% endif %}
+        </div>
+        <span class="muted">{{ post.created_at|date:'d M Y' }}</span>
+    </header>
+
+    {% if post.image_file %}
+        <div class="post-media post-detail-media">
+            <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+        </div>
+    {% elif post.image_url %}
+        <div class="post-media post-detail-media">
+            <img src="{{ post.image_url }}" alt="{{ post.title }}">
+        </div>
+    {% endif %}
+
+    {% if post.video_file %}
+        <div class="post-media post-detail-media video-media">
+            <video controls src="{{ post.video_file.url }}"></video>
+        </div>
+    {% endif %}
+
+    {% if post.summary %}
+        <p class="lead">{{ post.summary }}</p>
+    {% endif %}
+
+    <div class="article-content">{{ post.content|linebreaks }}</div>
+
+    <div class="post-actions">
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'journal:like' post.slug %}">
+                {% csrf_token %}
+                <button class="btn secondary" type="submit">J'aime</button>
+            </form>
+        {% else %}
+            <a class="btn secondary" href="{% url 'accounts:login' %}?next={{ request.path }}">J'aime</a>
+        {% endif %}
+        <span class="muted">{{ post.likes_count }} like{% if post.likes_count != 1 %}s{% endif %}</span>
+    </div>
+
+    <section class="comments-section">
+        <h2>Commentaires</h2>
+        {% for comment in comments %}
+            <article class="comment-card">
+                <p><strong>{{ comment.user.get_full_name|default:comment.user.username }}</strong> <span class="muted">{{ comment.created_at|date:'d M Y H:i' }}</span></p>
+                <p>{{ comment.content|linebreaks }}</p>
+            </article>
+        {% empty %}
+            <p class="empty">Aucun commentaire pour le moment.</p>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+            <form method="post" class="comment-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn" type="submit">Publier un commentaire</button>
+            </form>
+        {% else %}
+            <a class="btn" href="{% url 'accounts:login' %}?next={{ request.path }}">Connectez-vous pour commenter</a>
+        {% endif %}
+    </section>
+</article>
+{% endblock %}

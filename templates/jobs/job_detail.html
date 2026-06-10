@@ -1,0 +1,43 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="detail-layout">
+    <article class="detail-main">
+        <p class="eyebrow">{{ job.get_contract_type_display }}</p>
+        <h1>{{ job.title }}</h1>
+        <p class="lead">{{ job.company_name }}{% if job.location %} - {{ job.location }}{% endif %}</p>
+
+        <h2>Description</h2>
+        <p>{{ job.description|linebreaksbr }}</p>
+
+        {% if job.required_skills %}
+            <h2>Competences demandees</h2>
+            <p>{{ job.required_skills|linebreaksbr }}</p>
+        {% endif %}
+
+        <div class="detail-actions">
+            <a class="btn secondary" href="{% url 'jobs:list' %}">Retour aux offres</a>
+            {% if user.is_authenticated %}
+                {% if has_applied %}
+                    <span class="notice">Vous avez deja postule a cette offre.</span>
+                {% else %}
+                    <a class="btn" href="{% url 'jobs:apply' job.pk %}">Postuler</a>
+                {% endif %}
+            {% else %}
+                <p class="notice">Connectez-vous comme membre pour postuler depuis la plateforme.</p>
+                <a class="btn secondary" href="{% url 'accounts:login' %}">Connexion membre</a>
+            {% endif %}
+        </div>
+    </article>
+
+    <aside class="side-panel">
+        <h2>Recruteur</h2>
+        <p><strong>Nom :</strong> {{ job.recruiter_name }}</p>
+        <p><strong>Telephone :</strong> {{ job.recruiter_phone }}</p>
+        {% if job.recruiter_email %}<p><strong>Email :</strong> <a href="mailto:{{ job.recruiter_email }}">{{ job.recruiter_email }}</a></p>{% endif %}
+        {% if job.deadline %}<p><strong>Date limite :</strong> {{ job.deadline }}</p>{% endif %}
+    </aside>
+</section>
+{% endblock %}

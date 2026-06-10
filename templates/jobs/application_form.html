@@ -1,0 +1,31 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Postuler | Ajes Connect{% endblock %}
+
+{% block content %}
+<section class="detail-layout">
+    <article class="form-panel">
+        <p class="eyebrow">Candidature</p>
+        <h1>Postuler à « {{ job.title }} »</h1>
+        <p>Votre candidature sera liee à votre profil public.</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn" type="submit">Envoyer ma candidature</button>
+        </form>
+        <a class="btn secondary" href="{{ job.get_absolute_url }}">Retour à l'offre</a>
+    </article>
+
+    <aside class="side-panel">
+        <h2>Résumé de l'offre</h2>
+        <p><strong>Entreprise :</strong> {{ job.company_name }}</p>
+        {% if job.location %}<p><strong>Lieu :</strong> {{ job.location }}</p>{% endif %}
+        <p><strong>Contrat :</strong> {{ job.get_contract_type_display }}</p>
+        {% if job.deadline %}<p><strong>Date limite :</strong> {{ job.deadline }}</p>{% endif %}
+        {% if job.required_skills %}
+            <h3>Compétences demandées</h3>
+            <p>{{ job.required_skills|linebreaksbr }}</p>
+        {% endif %}
+    </aside>
+</section>
+{% endblock %}
