@@ -4,25 +4,32 @@
 
 {% block content %}
 <section class="page-title">
-    <p class="eyebrow">Notifications</p>
+    <p class="eyebrow">Centre de notifications</p>
     <h1>Mes notifications</h1>
-    <p>Retrouvez les annonces, offres et publications revelees depuis votre derniere connexion.</p>
+    <p>Restez à jour avec les dernières annonces et actualités</p>
 </section>
 
 <section class="list-stack">
     {% for notification in notifications %}
-        <article class="card notification-card{% if not notification.is_read %} unread{% endif %}">
+        <article class="notification-card{% if not notification.is_read %} unread{% endif %}">
             <div class="notification-header">
-                <strong>{{ notification.title }}</strong>
-                <span class="muted">{{ notification.created_at|date:'d M Y H:i' }}</span>
+                <strong>
+                    {% if not notification.is_read %}
+                        🔔
+                    {% else %}
+                        ✓
+                    {% endif %}
+                    {{ notification.title }}
+                </strong>
+                <span class="muted">{{ notification.created_at|date:'d/m/Y H:i' }}</span>
             </div>
             <p>{{ notification.message }}</p>
             {% if notification.link %}
-                <a class="btn secondary" href="{{ notification.link }}">Voir</a>
+                <a class="btn secondary" href="{{ notification.link }}" style="margin-top: 12px;">Voir →</a>
             {% endif %}
         </article>
     {% empty %}
-        <p class="empty">Aucune notification pour le moment.</p>
+        <p class="empty">✅ Aucune notification pour le moment</p>
     {% endfor %}
 </section>
 {% endblock %}

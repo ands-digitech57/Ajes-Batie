@@ -4,14 +4,14 @@
 
 {% block content %}
 <section class="page-title">
-    <p class="eyebrow">Journal</p>
-    <h1>Fil d'actualites</h1>
-    <p>Les publications de l'administration et les annonces de la communaute.</p>
+    <p class="eyebrow">Communauté</p>
+    <h1>Journal d'actualités</h1>
+    <p>Les publications et annonces de la communauté Ajes</p>
 </section>
 
 {% if user.is_staff %}
 <section class="actions-bar">
-    <a class="btn" href="{% url 'journal:create' %}">Publier une publication</a>
+    <a class="btn" href="{% url 'journal:create' %}">✍️ Publier une publication</a>
 </section>
 {% endif %}
 
@@ -23,30 +23,39 @@
                     <p class="eyebrow">{{ post.get_category_display }}</p>
                     <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
                 </div>
-                <span class="muted">{{ post.created_at|date:'d M Y' }}</span>
+                <span class="muted">{{ post.created_at|date:'d M' }}</span>
             </header>
-            {% if post.image_file %}
+            
+            {% if post.image_file or post.image_url %}
                 <div class="post-media">
-                    <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+                    {% if post.image_file %}
+                        <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+                    {% else %}
+                        <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                    {% endif %}
                 </div>
-            {% elif post.image_url %}
-                <div class="post-media">
-                    <img src="{{ post.image_url }}" alt="{{ post.title }}">
-                </div>
-            {% endif %}
-            {% if post.video_file %}
+            {% elif post.video_file %}
                 <div class="post-media video-media">
                     <video controls src="{{ post.video_file.url }}"></video>
                 </div>
             {% endif %}
-            <p>{{ post.summary|default:post.content|truncatewords:30 }}</p>
+            
+            <div class="post-content">
+                <p>{{ post.summary|default:post.content|truncatewords:30 }}</p>
+            </div>
+            
             <div class="post-meta">
-                <span>{{ post.likes_count }} like{% if post.likes_count != 1 %}s{% endif %}</span>
-                {% if post.event_date %}<span>Le {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
+                <span>❤️ {{ post.likes_count }} like{% if post.likes_count != 1 %}s{% endif %}</span>
+                {% if post.event_date %}<span>📅 {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
+            </div>
+            
+            <div class="post-actions">
+                <a href="{{ post.get_absolute_url }}">Lire plus</a>
+                <a href="{{ post.get_absolute_url }}#likes">J'aime</a>
             </div>
         </article>
     {% empty %}
-        <p class="empty">Aucune publication n'a encore ete partagee.</p>
+        <p class="empty" style="grid-column: 1 / -1;">📰 Aucune publication n'a encore été partagée</p>
     {% endfor %}
 </section>
 {% endblock %}

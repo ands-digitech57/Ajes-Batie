@@ -4,32 +4,46 @@
 
 {% block content %}
 <section class="page-title">
-    <p class="eyebrow">Opportunites</p>
+    <p class="eyebrow">Opportunités</p>
     <h1>Offres d'emploi</h1>
-    <p>Les offres sont publiées par les administrateurs ou les responsables autorisés.</p>
+    <p>Découvrez les meilleures opportunités de la communauté</p>
     {% if user.is_authenticated and user.is_staff %}
-        <a class="btn" href="{% url 'jobs:create' %}">Publier une offre</a>
+        <div style="margin-top: 16px;">
+            <a class="btn" href="{% url 'jobs:create' %}">➕ Publier une offre</a>
+        </div>
     {% endif %}
 </section>
 
 <form class="search-bar" method="get">
-    <input type="search" name="q" value="{{ query }}" placeholder="Ex: stage, Douala, electricien">
-    <button class="btn" type="submit">Rechercher</button>
+    <input type="search" name="q" value="{{ query }}" placeholder="Rechercher par titre, localisation, domaine...">
+    <button class="btn" type="submit">🔍 Rechercher</button>
 </form>
 
 <section class="list-stack">
     {% for job in jobs %}
         <article class="card">
-            <p class="eyebrow">{{ job.get_contract_type_display }}</p>
-            <h2><a href="{{ job.get_absolute_url }}">{{ job.title }}</a></h2>
-            <p class="meta">{{ job.company_name }}{% if job.location %} • {{ job.location }}{% endif %}{% if job.deadline %} • candidature avant {{ job.deadline }}{% endif %}</p>
-            <p>{{ job.description|truncatewords:26 }}</p>
-            <div class="card-actions">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                <div>
+                    <p class="eyebrow">{{ job.get_contract_type_display }}</p>
+                    <h2 style="margin: 4px 0;"><a href="{{ job.get_absolute_url }}">{{ job.title }}</a></h2>
+                </div>
+                <span class="muted" style="font-size: 0.85rem;">📅 Avant {{ job.deadline|date:'d/m/Y' if job.deadline else 'TBD' }}</span>
+            </div>
+            
+            <p class="meta">
+                🏢 <strong>{{ job.company_name }}</strong>
+                {% if job.location %} • 📍 {{ job.location }}{% endif %}
+            </p>
+            
+            <p style="margin-bottom: 16px;">{{ job.description|truncatewords:35 }}</p>
+            
+            <div style="display: flex; gap: 8px;">
                 <a class="btn secondary" href="{{ job.get_absolute_url }}">Voir l'offre</a>
+                <a class="btn secondary" href="{{ job.get_absolute_url }}#apply" style="flex: 0;">Postuler</a>
             </div>
         </article>
     {% empty %}
-        <p class="empty">Aucune offre active pour le moment.</p>
+        <p class="empty">💼 Aucune offre active pour le moment. Reviens bientôt!</p>
     {% endfor %}
 </section>
 {% endblock %}

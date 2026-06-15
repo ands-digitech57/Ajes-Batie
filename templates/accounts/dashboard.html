@@ -4,69 +4,106 @@
 
 {% block content %}
 <section class="page-title">
-    <p class="eyebrow">Espace membre</p>
-    <h1>Bonjour {{ user.first_name|default:user.username }}</h1>
-    <p>Gerez votre profil public et consultez vos candidatures.</p>
+    <p class="eyebrow">Bienvenue</p>
+    <h1>Mon espace</h1>
+    <p>Gérez votre profil et explorez la communauté</p>
 </section>
 
-{% if new_jobs_count or new_posts_count %}
-    <section class="notification-banner">
-        {% if new_jobs_count %}<p>{{ new_jobs_count }} nouvelle{% if new_jobs_count > 1 %}s{% endif %} offre{% if new_jobs_count > 1 %}s{% endif %} publiée{% if new_jobs_count > 1 %}s{% endif %}.</p>{% endif %}
-        {% if new_posts_count %}<p>{{ new_posts_count }} nouvel{% if new_posts_count > 1 %}s{% endif %} article{% if new_posts_count > 1 %}s{% endif %} ajouté{% if new_posts_count > 1 %}s{% endif %} au journal.</p>{% endif %}
-    </section>
-{% endif %}
-
-<section class="grid-2">
-    <article class="card">
-        <h2>Votre profil</h2>
-        {% if profile.photo_file %}
-            <img class="profile-photo" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}">
-        {% elif profile.photo_url %}
-            <img class="profile-photo" src="{{ profile.photo_url }}" alt="{{ profile.display_name }}">
-        {% endif %}
-        <p class="eyebrow">{{ profile.get_status_display }}</p>
-        <h3>{{ profile.display_name }}</h3>
-        <p>{{ profile.job_title|default:'Ajoutez votre metier, vos competences et vos contacts.' }}</p>
-        {% if profile.current_company %}<p><strong>Entreprise :</strong> {{ profile.current_company }}</p>{% endif %}
-        {% if profile.location %}<p><strong>Localisation :</strong> {{ profile.location }}</p>{% endif %}
-        <div class="actions">
-            <a class="btn" href="{% url 'profiles:edit' %}">Modifier mon profil</a>
-            {% if profile.is_public %}<a class="btn secondary" href="{{ profile.get_absolute_url }}">Voir public</a>{% endif %}
-        </div>
-        {% if unread_notifications_count %}
-            <div class="notification-summary">
-                <p><strong>{{ unread_notifications_count }}</strong> notification{% if unread_notifications_count > 1 %}s{% endif %} non lue{% if unread_notifications_count > 1 %}s{% endif %}.</p>
-                <a class="btn secondary" href="{% url 'accounts:notifications' %}">Voir mes notifications</a>
-            </div>
-        {% endif %}
-    </article>
-    <article class="card">
-        <h2>Accès rapides</h2>
-        <p>Accédez rapidement aux offres d'emploi et au journal de la communauté.</p>
-        <div class="actions">
-            <a class="btn secondary" href="{% url 'jobs:list' %}">Voir les offres</a>
+<section class="dashboard-layout">
+    <!-- LEFT SIDEBAR -->
+    <aside class="dashboard-sidebar">
+        <h3>Menu</h3>
+        <ul>
+            <li><a href="{% url 'profiles:list' %}">👥 Profils</a></li>
+            <li><a href="{% url 'jobs:list' %}">💼 Offres d'emploi</a></li>
+            <li><a href="{% url 'journal:list' %}">📰 Journal</a></li>
+            <li><a href="{% url 'accounts:notifications' %}">🔔 Notifications</a></li>
             {% if user.is_staff %}
-                <a class="btn secondary" href="{% url 'jobs:create' %}">Publier une offre</a>
+                <li><a href="{% url 'journal:create' %}">✍️ Publier</a></li>
             {% endif %}
-            <a class="btn secondary" href="{% url 'journal:list' %}">Voir le journal</a>
-        </div>
-    </article>
-</section>
+        </ul>
+    </aside>
 
-<section class="section-gap">
-    <div class="section-heading">
-        <h2>Mes candidatures</h2>
-        <span class="muted">{{ applications|length }} candidature{% if applications|length != 1 %}s{% endif %}</span>
-    </div>
-    <section class="list-stack">
-        {% for application in applications %}
-            <article class="card">
-                <h3><a href="{{ application.job_offer.get_absolute_url }}">{{ application.job_offer.title }}</a></h3>
-                <p>{{ application.job_offer.company_name }} - {{ application.created_at }}</p>
-            </article>
-        {% empty %}
-            <p class="empty">Vous n'avez pas encore postule a une offre.</p>
-        {% endfor %}
+    <!-- CENTER FEED -->
+    <section class="dashboard-feed">
+        {% if new_jobs_count or new_posts_count %}
+            <section class="notification-banner">
+                {% if new_jobs_count %}<p>⚡ {{ new_jobs_count }} nouvelle{% if new_jobs_count > 1 %}s{% endif %} offre{% if new_jobs_count > 1 %}s{% endif %}</p>{% endif %}
+                {% if new_posts_count %}<p>📰 {{ new_posts_count }} nouvel{% if new_posts_count > 1 %}s{% endif %} article{% if new_posts_count > 1 %}s{% endif %}</p>{% endif %}
+            </section>
+        {% endif %}
+
+        <!-- Profile Card -->
+        <article class="card">
+            <div class="profile-header">
+                {% if profile.photo_file %}
+                    <img class="profile-image" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}">
+                {% elif profile.photo_url %}
+                    <img class="profile-image" src="{{ profile.photo_url }}" alt="{{ profile.display_name }}">
+                {% else %}
+                    <div class="profile-image" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">👤</div>
+                {% endif %}
+                <div class="profile-summary">
+                    <p class="eyebrow">{{ profile.get_status_display }}</p>
+                    <h2>{{ profile.display_name }}</h2>
+                    <p class="lead">{{ profile.job_title|default:'Ajouter votre métier' }}</p>
+                    {% if profile.current_company %}<p>🏢 {{ profile.current_company }}</p>{% endif %}
+                    {% if profile.location %}<p>📍 {{ profile.location }}</p>{% endif %}
+                </div>
+            </div>
+            <div class="actions">
+                <a class="btn" href="{% url 'profiles:edit' %}">Modifier mon profil</a>
+                {% if profile.is_public %}<a class="btn secondary" href="{{ profile.get_absolute_url }}">Voir mon profil public</a>{% endif %}
+            </div>
+        </article>
+
+        <!-- Candidatures Section -->
+        <section class="section-gap">
+            <div class="section-heading">
+                <h2>Mes candidatures</h2>
+                <span class="muted">{{ applications|length }} candidature{% if applications|length != 1 %}s{% endif %}</span>
+            </div>
+            {% if applications %}
+                <section class="list-stack">
+                    {% for application in applications %}
+                        <article class="card">
+                            <p class="eyebrow">{{ application.job_offer.get_contract_type_display }}</p>
+                            <h3><a href="{{ application.job_offer.get_absolute_url }}">{{ application.job_offer.title }}</a></h3>
+                            <p class="meta">{{ application.job_offer.company_name }}{% if application.job_offer.location %} • {{ application.job_offer.location }}{% endif %}</p>
+                            <p><strong>Candidature du:</strong> {{ application.created_at|date:'d/m/Y' }}</p>
+                            <div class="card-actions">
+                                <a class="btn secondary" href="{{ application.job_offer.get_absolute_url }}">Voir l'offre</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </section>
+            {% else %}
+                <p class="empty">📝 Vous n'avez pas encore postulé à une offre.</p>
+            {% endif %}
+        </section>
     </section>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="dashboard-right">
+        <h3>Notifications</h3>
+        {% if unread_notifications_count %}
+            <div style="background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                <p><strong>{{ unread_notifications_count }}</strong></p>
+                <p>notification{% if unread_notifications_count > 1 %}s{% endif %} non lue{% if unread_notifications_count > 1 %}s{% endif %}</p>
+                <a class="btn secondary" href="{% url 'accounts:notifications' %}" style="display: block; margin-top: 12px; text-align: center; background: white; color: #3b82f6; border: none;">Voir toutes</a>
+            </div>
+        {% else %}
+            <p class="muted" style="text-align: center; padding: 20px;">✅ Aucune notification</p>
+        {% endif %}
+
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
+
+        <h3 style="margin-top: 0;">Explorez</h3>
+        <ul style="list-style: none;">
+            <li style="margin-bottom: 12px;"><a href="{% url 'profiles:list' %}" style="display: block; padding: 8px 12px; background: #f5f5f5; border-radius: 6px; color: #3b82f6; text-decoration: none; font-weight: 600;">👥 Trouver des talents</a></li>
+            <li style="margin-bottom: 12px;"><a href="{% url 'jobs:list' %}" style="display: block; padding: 8px 12px; background: #f5f5f5; border-radius: 6px; color: #3b82f6; text-decoration: none; font-weight: 600;">💼 Voir les offres</a></li>
+            <li><a href="{% url 'journal:list' %}" style="display: block; padding: 8px 12px; background: #f5f5f5; border-radius: 6px; color: #3b82f6; text-decoration: none; font-weight: 600;">📰 Lire le journal</a></li>
+        </ul>
+    </aside>
 </section>
 {% endblock %}

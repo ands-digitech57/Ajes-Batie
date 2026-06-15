@@ -27,7 +27,7 @@ def post_detail(request, slug):
             messages.success(request, 'Votre commentaire a ete enregistre.')
             return redirect(post)
     else:
-        form = JournalCommentForm()
+        form = JournalPostCommentForm()
 
     return render(request, 'journal/post_detail.html', {
         'post': post,
