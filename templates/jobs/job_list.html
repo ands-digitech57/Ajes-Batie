@@ -27,7 +27,16 @@
                     <p class="eyebrow">{{ job.get_contract_type_display }}</p>
                     <h2 style="margin: 4px 0;"><a href="{{ job.get_absolute_url }}">{{ job.title }}</a></h2>
                 </div>
-                <span class="muted" style="font-size: 0.85rem;">📅 Avant {{ job.deadline|date:'d/m/Y' if job.deadline else 'TBD' }}</span>
+                
+                {% if job.deadline %}
+<span class="muted">
+📅 Avant {{ job.deadline|date:"d/m/Y" }}
+</span>
+{% else %}
+<span class="muted">
+📅 Aucune date limite
+</span>
+{% endif %}
             </div>
             
             <p class="meta">
@@ -39,7 +48,7 @@
             
             <div style="display: flex; gap: 8px;">
                 <a class="btn secondary" href="{{ job.get_absolute_url }}">Voir l'offre</a>
-                <a class="btn secondary" href="{{ job.get_absolute_url }}#apply" style="flex: 0;">Postuler</a>
+                <a class="btn secondary" href="{% url 'jobs:apply' job.pk %}"> Postuler</a>
             </div>
         </article>
     {% empty %}

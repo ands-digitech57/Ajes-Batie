@@ -1,4 +1,4 @@
-﻿from django.contrib import messages
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
@@ -11,7 +11,6 @@ from .forms import ApplicationForm, JobOfferForm
 from .models import Application, JobOffer
 
 
-@login_required
 def job_list(request):
     query = request.GET.get('q', '').strip()
     jobs = JobOffer.objects.filter(is_active=True)
@@ -31,7 +30,6 @@ def job_list(request):
     })
 
 
-@login_required
 def job_detail(request, pk):
     job = get_object_or_404(JobOffer, pk=pk, is_active=True)
     has_applied = False
@@ -50,8 +48,8 @@ def job_detail(request, pk):
 @login_required
 def job_create(request):
     if not request.user.is_staff:
-        messages.error(request, "Vous n'êtes pas autorisé à publier des offres.")
-        return redirect('jobs:list')
+       messages.error(request, "Vous n'etes pas autorise a publier des offres.")
+    return redirect('jobs:list')
 
     if request.method == 'POST':
         form = JobOfferForm(request.POST)
@@ -63,7 +61,7 @@ def job_create(request):
                     Notification(
                         user=user,
                         title="Nouvelle offre d'emploi",
-                        message=f"Une nouvelle offre '{job.title}' a été publiée.",
+                        message=f"Une nouvelle offre '{job.title}' a �t� publi�e.",
                         link=job.get_absolute_url(),
                         type='job',
                     )
@@ -107,3 +105,4 @@ def job_apply(request, pk):
         'job': job,
         'profile': profile,
     })
+

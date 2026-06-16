@@ -1,58 +1,415 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Modifier mon profil | Ajes Connect{% endblock %}
 
 {% block content %}
-<section class="form-page">
-    <div class="form-panel">
-        <p class="eyebrow">Profil public</p>
-        <h1>Modifier mon profil</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% if form.non_field_errors %}
-                <div class="form-errors">{{ form.non_field_errors }}</div>
-            {% endif %}
+<style>
+    .edit-layout {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-            <fieldset>
-                <legend>Photo et identité</legend>
+    .edit-sidebar {
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .profile-preview {
+        background: var(--primary-white);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: var(--shadow-sm);
+        text-align: center;
+    }
+
+    .profile-preview-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 16px;
+        object-fit: cover;
+        border: 4px solid var(--primary-green);
+        background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+    }
+
+    .profile-preview h3 {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+        color: var(--text-primary);
+    }
+
+    .profile-preview .lead {
+        color: var(--primary-green);
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+
+    .edit-form-container {
+        background: var(--primary-white);
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .form-section {
+        margin-bottom: 32px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+        font-size: 1.3rem;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    .section-icon {
+        font-size: 1.8rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .form-row.full {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px 16px;
+        border: 2px solid var(--border-light);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-help {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+    }
+
+    .image-upload-area {
+        border: 2px dashed var(--border-light);
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        background: var(--bg-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .image-upload-area:hover {
+        border-color: var(--primary-green);
+        background-color: #f0f9ff;
+    }
+
+    .image-upload-area input[type=file] {
+        display: none;
+    }
+
+    .upload-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .current-image {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .checkbox-group input[type=checkbox] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .checkbox-group label {
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 32px;
+        padding-top: 32px;
+        border-top: 2px solid var(--border-light);
+    }
+
+    .form-actions .btn {
+        flex: 1;
+    }
+
+    .form-errors {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid var(--danger);
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 1024px) {
+        .edit-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .edit-sidebar {
+            position: static;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class=page-title>
+    <p class=eyebrow>Profil</p>
+    <h1>Modifier mon profil</h1>
+    <p>Actualisez vos informations professionnelles</p>
+</section>
+
+<div class=edit-layout>
+    <aside class=edit-sidebar>
+        <div class=profile-preview>
+            {% if profile.photo_file %}
+                <img class=profile-preview-image src={{ profile.photo_file.url }} alt={{ profile.display_name }}>
+            {% elif profile.photo_url %}
+                <img class=profile-preview-image src={{ profile.photo_url }} alt={{ profile.display_name }}>
+            {% else %}
+                <div class=profile-preview-image style=font-size: 3rem; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); border-radius: 50%; width: 120px; height: 120px; margin: 0 auto 16px;>👤</div>
+            {% endif %}
+            <h3>{{ profile.display_name }}</h3>
+            <p class=lead>{{ profile.job_title|default:''Ajouter votre métier' }}</p>
+            {% if profile.current_company %}<p>🏢 {{ profile.current_company }}</p>{% endif %}
+            {% if profile.location %}<p>📍 {{ profile.location }}</p>{% endif %}
+            <p style=margin-top: 16px; font-size: 0.85rem; color: var(--text-muted);>
+                {% if profile.is_public %}✅ Profil public{% else %}🔒 Profil privé{% endif %}
+            </p>
+        </div>
+    </aside>
+
+    <div class=edit-form-container>
+        {% if form.non_field_errors %}
+            <div class=form-errors>
+                {% for error in form.non_field_errors %}
+                    <div style=margin-bottom: 8px;>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method=post enctype=multipart/form-data>
+            {% csrf_token %}
+
+            <div class=form-section>
+                <div class=section-header>
+                    <span class=section-icon>📸</span>
+                    <h2>Photo & Identité</h2>
+                </div>
+
+                <div class=form-group>
+                    <label>Photo de profil</label>
+                    <div class=image-upload-area onclick=document.querySelector('[name=photo_file]').click();>
+                        <div class=upload-icon>📷</div>
+                        <p><strong>Téléchargez une photo</strong></p>
+                    </div>
+                    {{ form.photo_file }}
+                </div>
+
                 {% if profile.photo_file %}
-                    <div class="current-photo">
-                        <img class="profile-photo" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}">
+                    <div style=margin-top: 12px;>
+                        <img class=current-image src={{ profile.photo_file.url }} alt={{ profile.display_name }}>
                     </div>
                 {% endif %}
-                <p>{{ form.photo_file.label_tag }}{{ form.photo_file }}</p>
-                <p>{{ form.photo_url.label_tag }}{{ form.photo_url }}</p>
-                <p>{{ form.first_name.label_tag }}{{ form.first_name }}</p>
-                <p>{{ form.last_name.label_tag }}{{ form.last_name }}</p>
-            </fieldset>
 
-            <fieldset>
-                <legend>Profil professionnel</legend>
-                <p>{{ form.job_title.label_tag }}{{ form.job_title }}</p>
-                <p>{{ form.current_company.label_tag }}{{ form.current_company }}</p>
-                <p>{{ form.industry.label_tag }}{{ form.industry }}</p>
-                <p>{{ form.location.label_tag }}{{ form.location }}</p>
-                <p>{{ form.status.label_tag }}{{ form.status }}</p>
-                <p>{{ form.education_level.label_tag }}{{ form.education_level }}</p>
-                <p>{{ form.skills_text.label_tag }}{{ form.skills_text }}</p>
-                <p>{{ form.bio.label_tag }}{{ form.bio }}</p>
-            </fieldset>
+                <div class=form-row>
+                    <div class=form-group>
+                        <label for={{ form.first_name.id_for_label }}>Prénom</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class=form-group>
+                        <label for={{ form.last_name.id_for_label }}>Nom</label>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+            </div>
 
-            <fieldset>
-                <legend>Contact et CV</legend>
-                <p>{{ form.email.label_tag }}{{ form.email }}</p>
-                <p>{{ form.phone.label_tag }}{{ form.phone }}</p>
-                <p>{{ form.whatsapp.label_tag }}{{ form.whatsapp }}</p>
-                <p>{{ form.linkedin_url.label_tag }}{{ form.linkedin_url }}</p>
-                <p>{{ form.cv_file.label_tag }}{{ form.cv_file }}</p>
+            <div class=form-section>
+                <div class=section-header>
+                    <span class=section-icon>💼</span>
+                    <h2>Profil Professionnel</h2>
+                </div>
+
+                <div class=form-group form-row full>
+                    <label for={{ form.job_title.id_for_label }}>{{ form.job_title.label }}</label>
+                    {{ form.job_title }}
+                </div>
+
+                <div class=form-row>
+                    <div class=form-group>
+                        <label for={{ form.current_company.id_for_label }}>{{ form.current_company.label }}</label>
+                        {{ form.current_company }}
+                    </div>
+                    <div class=form-group>
+                        <label for={{ form.industry.id_for_label }}>{{ form.industry.label }}</label>
+                        {{ form.industry }}
+                    </div>
+                </div>
+
+                <div class=form-row>
+                    <div class=form-group>
+                        <label for={{ form.location.id_for_label }}>{{ form.location.label }}</label>
+                        {{ form.location }}
+                    </div>
+                    <div class=form-group>
+                        <label for={{ form.status.id_for_label }}>{{ form.status.label }}</label>
+                        {{ form.status }}
+                    </div>
+                </div>
+
+                <div class=form-group form-row full>
+                    <label for={{ form.education_level.id_for_label }}>{{ form.education_level.label }}</label>
+                    {{ form.education_level }}
+                </div>
+            </div>
+
+            <div class=form-section>
+                <div class=section-header>
+                    <span class=section-icon>✨</span>
+                    <h2>À Propos & Compétences</h2>
+                </div>
+
+                <div class=form-group form-row full>
+                    <label for={{ form.bio.id_for_label }}>{{ form.bio.label }}</label>
+                    {{ form.bio }}
+                </div>
+
+                <div class=form-group form-row full>
+                    <label for={{ form.skills_text.id_for_label }}>{{ form.skills_text.label }}</label>
+                    {{ form.skills_text }}
+                </div>
+            </div>
+
+            <div class=form-section>
+                <div class=section-header>
+                    <span class=section-icon>📞</span>
+                    <h2>Contact & Réseaux</h2>
+                </div>
+
+                <div class=form-group form-row full>
+                    <label for={{ form.email.id_for_label }}>{{ form.email.label }}</label>
+                    {{ form.email }}
+                </div>
+
+                <div class=form-row>
+                    <div class=form-group>
+                        <label for={{ form.phone.id_for_label }}>{{ form.phone.label }}</label>
+                        {{ form.phone }}
+                    </div>
+                    <div class=form-group>
+                        <label for={{ form.whatsapp.id_for_label }}>{{ form.whatsapp.label }}</label>
+                        {{ form.whatsapp }}
+                    </div>
+                </div>
+
+                <div class=form-group form-row full>
+                    <label for={{ form.linkedin_url.id_for_label }}>{{ form.linkedin_url.label }}</label>
+                    {{ form.linkedin_url }}
+                </div>
+            </div>
+
+            <div class=form-section>
+                <div class=section-header>
+                    <span class=section-icon>📄</span>
+                    <h2>CV & Visibilité</h2>
+                </div>
+
+                <div class=form-group form-row full>
+                    <label>{{ form.cv_file.label }}</label>
+                    <div class=image-upload-area onclick=document.querySelector('[name=cv_file]').click();>
+                        <div class=upload-icon>📁</div>
+                        <p><strong>Téléchargez votre CV</strong></p>
+                    </div>
+                    {{ form.cv_file }}
+                </div>
+
                 {% if profile.cv_file %}
-                    <p><strong>CV actuel :</strong> <a href="{{ profile.cv_file.url }}" target="_blank">Télécharger</a></p>
+                    <div style=margin-top: 12px;>
+                        <p><a href={{ profile.cv_file.url }} target=_blank>📄 CV actuel</a></p>
+                    </div>
                 {% endif %}
-                <p>{{ form.is_public.label_tag }}{{ form.is_public }}</p>
-            </fieldset>
 
-            <button class="btn" type="submit">Enregistrer</button>
+                <div class=form-group form-row full style=margin-top: 20px;>
+                    <div class=checkbox-group>
+                        {{ form.is_public }}
+                        <label for={{ form.is_public.id_for_label }}>{{ form.is_public.label }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class=form-actions>
+                <a class=btn secondary href={% url 'profiles:list' %}>Annuler</a>
+                <button class=btn type=submit>✅ Enregistrer</button>
+            </div>
         </form>
     </div>
-</section>
+</div>
 {% endblock %}
