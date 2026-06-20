@@ -1,7 +1,7 @@
 ﻿from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-
+from django.utils.text import slugify  # <-- 1. AJOUTEZ CETTE LIGNE TOUT EN HAUT
 
 class JournalPost(models.Model):
     CATEGORY_CHOICES = [
@@ -14,7 +14,7 @@ class JournalPost(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='journal_posts')
     title = models.CharField(max_length=180)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)  # <-- 2. AJOUTEZ CE CHAMP
     summary = models.TextField(blank=True)
     content = models.TextField()
     image_url = models.URLField(blank=True)
@@ -37,6 +37,11 @@ class JournalPost(models.Model):
     @property
     def likes_count(self):
         return self.likes.count()
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
 
 class JournalPostLike(models.Model):
