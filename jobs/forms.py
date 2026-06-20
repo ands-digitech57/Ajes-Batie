@@ -5,6 +5,8 @@ from .models import Application, JobOffer
 class JobOfferForm(forms.ModelForm):
     class Meta:
         model = JobOffer
+        exclude = ("createed_at",)
+
         fields = [
             'title',
             'description',
@@ -34,7 +36,6 @@ class JobOfferForm(forms.ModelForm):
             'required_skills': 'Competences demandees',
             'deadline': 'Date limite',
         }
-
 
 class ApplicationForm(forms.ModelForm):
     class Meta:
