@@ -51,7 +51,7 @@ def signup(request):
                         profile.skills.set(skills)
 
                 login(request, user)
-                return redirect('dashboard')
+                return redirect('accounts:dashboard')
                 
             except Exception as e:
                 # Si la base de données rejette l'inscription, l'erreur s'affichera sur votre site
