@@ -4,99 +4,74 @@
 {% block title %}Inscription | Ajes Connect{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f8fafc; padding: 40px 20px; width: 100%; box-sizing: border-box;">
+<div id="insta-signup-container" style="display: flex !important; justify-content: center !important; align-items: center !important; min-height: 90vh !important; background-color: #fafafa !important; padding: 40px 20px !important; width: 100% !important; box-sizing: border-box !important;">
     
-    <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); width: 100%; max-width: 650px; box-sizing: border-box;">
+    <div style="background: #ffffff !important; border: 1px solid #dbdbdb !important; border-radius: 4px !important; padding: 40px !important; width: 100% !important; max-width: 450px !important; box-sizing: border-box !important; text-align: center !important;">
         
-        <div style="margin-bottom: 32px; text-align: center;">
-            <span style="font-size: 0.75rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">Membre</span>
-            <h1 style="font-size: 1.75rem; font-weight: 700; color: #1f2937; margin: 0 0 8px 0;">Créer mon profil professionnel</h1>
-            <p style="color: #6b7280; font-size: 0.95rem; margin: 0; line-height: 1.5;">Inscrivez-vous et commencez à construire votre profil : photo, titre, compétences et CV.</p>
-        </div>
+        <h1 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 12px 0;">Ajes Connect</h1>
+        <p style="color: #737373; font-size: 0.95rem; font-weight: 600; margin: 0 0 24px 0; line-height: 1.4;">
+            Inscrivez-vous pour voir les profils professionnels de la communauté.
+        </p>
 
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" style="text-align: left !important;">
             {% csrf_token %}
             
-            {% if form.non_field_errors %}
-                <div style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-            
-            {% if form.errors %}
-                <div style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
-                    {% for field, errs in form.errors.items %}
-                        {% for err in errs %}
-                            <p style="margin: 2px 0;">⚠️ <strong>{{ field }} :</strong> {{ err }}</p>
-                        {% endfor %}
-                    {% endfor %}
+            {% if form.non_field_errors or form.errors %}
+                <div style="background-color: #fff2f2; color: #ed4956; padding: 12px; border-radius: 4px; border: 1px solid #ed4956; margin-bottom: 20px; font-size: 0.85rem;">
+                    Veuillez vérifier les informations saisies.
                 </div>
             {% endif %}
 
             <style>
-                .form-panel-fieldset {
-                    border: 1px solid #f3f4f6 !important;
-                    border-radius: 12px !important;
-                    padding: 20px !important;
-                    margin-bottom: 24px !important;
-                    background: #fbfcfd !important;
+                #insta-signup-container fieldset {
+                    border: none !important;
+                    padding: 0 !important;
+                    margin: 0 0 20px 0 !important;
                 }
-                .form-panel-fieldset legend {
-                    font-size: 0.95rem !important;
-                    font-weight: 700 !important;
-                    color: #111827 !important;
-                    padding: 0 10px !important;
-                    float: none !important;
-                    width: auto !important;
-                    margin: 0 !important;
-                }
-                .form-panel-fieldset p {
-                    margin-bottom: 16px !important;
-                    margin-top: 0 !important;
-                }
-                .form-panel-fieldset p:last-child {
-                    margin-bottom: 0 !important;
-                }
-                .form-panel-fieldset label {
+                #insta-signup-container legend {
                     display: block !important;
-                    font-weight: 600 !important;
-                    color: #4b5563 !important;
-                    margin-bottom: 6px !important;
-                    font-size: 0.875rem !important;
-                }
-                .form-panel-fieldset input[type="text"],
-                .form-panel-fieldset input[type="email"],
-                .form-panel-fieldset input[type="password"],
-                .form-panel-fieldset input[type="url"],
-                .form-panel-fieldset input[type="tel"],
-                .form-panel-fieldset select,
-                .form-panel-fieldset textarea {
                     width: 100% !important;
-                    padding: 10px 14px !important;
-                    border: 1px solid #d1d5db !important;
-                    border-radius: 8px !important;
-                    outline: none !important;
-                    font-size: 0.95rem !important;
-                    box-sizing: border-box !important;
-                    background-color: #ffffff !important;
+                    font-size: 0.85rem !important;
+                    font-weight: 700 !important;
+                    text-transform: uppercase !important;
+                    color: #8e8e8e !important;
+                    margin-bottom: 10px !important;
+                    border-bottom: 1px solid #efefef !important;
+                    padding-bottom: 4px !important;
                 }
-                .form-panel-fieldset input:focus, .form-panel-fieldset select:focus, .form-panel-fieldset textarea:focus {
-                    border-color: #10b981 !important;
-                    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+                #insta-signup-container p {
+                    margin: 0 0 12px 0 !important;
                 }
-                .form-panel-fieldset input[type="checkbox"] {
-                    margin-right: 8px !important;
-                    transform: scale(1.1) !important;
-                }
-                .form-panel-fieldset .helptext {
+                #insta-signup-container label {
                     display: block !important;
                     font-size: 0.8rem !important;
-                    color: #9ca3af !important;
-                    margin-top: 4px !important;
+                    color: #262626 !important;
+                    margin-bottom: 4px !important;
+                    font-weight: 600 !important;
+                }
+                #insta-signup-container input[type="text"],
+                #insta-signup-container input[type="email"],
+                #insta-signup-container input[type="password"],
+                #insta-signup-container input[type="url"],
+                #insta-signup-container input[type="tel"],
+                #insta-signup-container select,
+                #insta-signup-container textarea {
+                    width: 100% !important;
+                    background: #fafafa !important;
+                    border: 1px solid #dbdbdb !important;
+                    border-radius: 3px !important;
+                    padding: 9px 12px !important;
+                    font-size: 0.85rem !important;
+                    outline: none !important;
+                    box-sizing: border-box !important;
+                    color: #262626 !important;
+                }
+                #insta-signup-container input:focus {
+                    border-color: #a8a8a8 !important;
                 }
             </style>
 
-            <fieldset class="form-panel-fieldset">
+            <fieldset>
                 <legend>Compte</legend>
                 <p>{{ form.username.label_tag }}{{ form.username }}</p>
                 <p>{{ form.email.label_tag }}{{ form.email }}</p>
@@ -104,13 +79,13 @@
                 <p>{{ form.password2.label_tag }}{{ form.password2 }}</p>
             </fieldset>
 
-            <fieldset class="form-panel-fieldset">
+            <fieldset>
                 <legend>Identité</legend>
                 <p>{{ form.first_name.label_tag }}{{ form.first_name }}</p>
                 <p>{{ form.last_name.label_tag }}{{ form.last_name }}</p>
             </fieldset>
 
-            <fieldset class="form-panel-fieldset">
+            <fieldset>
                 <legend>Profil professionnel</legend>
                 <p>{{ form.job_title.label_tag }}{{ form.job_title }}</p>
                 <p>{{ form.current_company.label_tag }}{{ form.current_company }}</p>
@@ -122,7 +97,7 @@
                 <p>{{ form.bio.label_tag }}{{ form.bio }}</p>
             </fieldset>
 
-            <fieldset class="form-panel-fieldset">
+            <fieldset>
                 <legend>Contact et documents</legend>
                 <p>{{ form.phone.label_tag }}{{ form.phone }}</p>
                 <p>{{ form.whatsapp.label_tag }}{{ form.whatsapp }}</p>
@@ -130,17 +105,21 @@
                 <p>{{ form.photo_file.label_tag }}{{ form.photo_file }}</p>
                 <p>{{ form.photo_url.label_tag }}{{ form.photo_url }}</p>
                 <p>{{ form.cv_file.label_tag }}{{ form.cv_file }}</p>
-                <p style="display: flex; align-items: center; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; margin-top: 10px;">
-                    {{ form.is_public.label_tag }}{{ form.is_public }}
+                <p style="display: flex !important; align-items: center !important; flex-direction: row-reverse !important; justify-content: flex-end !important; gap: 8px !important; margin-top: 15px !important;">
+                    {{ form.is_public.label_tag }}
+                    <input type="checkbox" name="is_public" id="id_is_public" style="margin: 0 !important; transform: scale(1.1) !important;">
                 </p>
             </fieldset>
 
-            <div style="text-align: center; margin-top: 32px;">
-                <button type="submit" style="width: 100%; max-width: 350px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); transition: transform 0.2s, opacity 0.2s;" onmouseover="this.style.opacity='0.95'" onmouseout="this.style.opacity='1'">
-                    Créer mon compte
-                </button>
-            </div>
+            <button type="submit" style="width: 100% !important; background-color: #0095f6 !important; color: #ffffff !important; border: none !important; border-radius: 8px !important; padding: 7px 16px !important; font-weight: 700 !important; font-size: 0.9rem !important; cursor: pointer !important; margin-top: 10px !important;">
+                Inscription
+            </button>
         </form>
+
+        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #dbdbdb !important; font-size: 0.9rem; color: #737373;">
+            Vous avez un compte ? <a href="{% url 'accounts:login' %}" style="color: #0095f6 !important; text-decoration: none !important; font-weight: 600 !important;">Connectez-vous</a>
+        </div>
+
     </div>
 </div>
 {% endblock %}
