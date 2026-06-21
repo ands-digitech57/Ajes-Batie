@@ -1,7 +1,7 @@
 ﻿from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-from django.utils.text import slugify  # <-- 1. AJOUTEZ CETTE LIGNE TOUT EN HAUT
+from django.utils.text import slugify
 
 class JournalPost(models.Model):
     CATEGORY_CHOICES = [
@@ -14,7 +14,7 @@ class JournalPost(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='journal_posts')
     title = models.CharField(max_length=180)
-    slug = models.SlugField(unique=True, blank=True)  # <-- 2. AJOUTEZ CE CHAMP
+    slug = models.SlugField(unique=True, blank=True)
     summary = models.TextField(blank=True)
     content = models.TextField()
     image_url = models.URLField(blank=True)
@@ -42,6 +42,27 @@ class JournalPost(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+# NOUVEAU MODÈLE MULTI-MÉDIAS (ALBUMS PHOTOS ET VIDÉOS ACCESSIBLES PAR TON ADMIN)
+class JournalPostMedia(models.Model):
+    MEDIA_TYPES = (
+        ('image', 'Image'),
+        ('video', 'Vidéo'),
+    )
+    post = models.ForeignKey(JournalPost, on_delete=models.CASCADE, related_name='media_items', verbose_name="Publication")
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPES, default='image', verbose_name="Type de média")
+    file = models.FileField(upload_to='journal_gallery/', blank=True, null=True, verbose_name="Fichier")
+    external_url = models.URLField(blank=True, null=True, verbose_name="Lien URL Externe")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Média de publication"
+        verbose_name_plural = "Médias de publication"
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.get_media_type_display()} pour {self.post.title}"
 
 
 class JournalPostLike(models.Model):
