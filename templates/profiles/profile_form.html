@@ -29,7 +29,7 @@
                     {% endif %}
                 </div>
                 
-                <h3 class="fw-bold h5 mb-1">{{ profile.display_name }}</h3>
+                <h3 class="fw-bold h5 mb-1">{{ profile.display_name|default:user.username }}</h3>
                 <p class="text-success fw-semibold mb-3">{{ profile.job_title|default:"Ajouter votre métier" }}</p>
                 
                 {% if profile.current_company %}
@@ -38,21 +38,13 @@
                 {% if profile.location %}
                     <p class="text-muted small mb-3">📍 {{ profile.location }}</p>
                 {% endif %}
-                
-                <div class="border-top pt-3 mt-2">
-                    <span class="badge {% if profile.is_public %}bg-success-subtle text-success{% else %}bg-warning-subtle text-warning{% endif %} px-3 py-2 rounded-pill fw-bold w-100">
-                        {% if profile.is_public %}✅ Profil public{% else %}🔒 Profil privé{% endif %}
-                    </span>
-                </div>
             </div>
         </div>
 
-        <!-- Colonne Formulaire de Modification (Droite) -->
+        <!-- Colonne Formulaire (Droite) -->
         <div class="col-lg-8">
-            <!-- Gestion des erreurs globales -->
             {% if form.non_field_errors %}
                 <div class="alert alert-danger shadow-sm border-0 rounded-3 mb-4">
-                    <h5 class="fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Veuillez corriger les erreurs suivantes :</h5>
                     {% for error in form.non_field_errors %}
                         <p class="mb-0 small">{{ error }}</p>
                     {% endfor %}
@@ -63,166 +55,24 @@
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    <!-- SECTION 1 : Photo & Identité -->
-                    <div class="mb-5 pb-4 border-bottom">
-                        <div class="d-flex align-items-center gap-2 mb-4">
-                            <span class="fs-3">📸</span>
-                            <h2 class="h4 fw-bold mb-0 text-dark">Photo & Identité</h2>
-                        </div>
-
+                    <!-- Rendu dynamique des champs du formulaire -->
+                    {% for field in form %}
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Photo de profil</label>
-                            <!-- Zone cliquable liée à l'input masqué -->
-                            <div class="p-4 text-center rounded-3 bg-light border border-2 border-dashed" style="cursor: pointer;" onclick="document.getElementById('id_photo_file_input').click();">
-                                <span class="fs-2 d-block mb-2">📷</span>
-                                <span class="fw-bold text-primary d-block">Téléchargez une nouvelle photo</span>
-                                <span class="text-muted small">Cliquez ici pour explorer vos images locales</span>
-                            </div>
-                            <div class="d-none">
-                                <!-- On injecte un ID spécifique pour le cibler facilement en JavaScript -->
-                                {{ form.photo_file }}
-                            </div>
-                            {% if form.photo_file.errors %}
-                                <div class="text-danger small mt-1">{{ form.photo_file.errors }}</div>
+                            <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text text-muted small">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">{{ field.errors }}</div>
                             {% endif %}
                         </div>
+                    {% endfor %}
 
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">Prénom</label>
-                                {{ form.first_name }}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">Nom</label>
-                                {{ form.last_name }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SECTION 2 : Profil Professionnel -->
-                    <div class="mb-5 pb-4 border-bottom">
-                        <div class="d-flex align-items-center gap-2 mb-4">
-                            <span class="fs-3">💼</span>
-                            <h2 class="h4 fw-bold mb-0 text-dark">Profil Professionnel</h2>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.job_title.id_for_label }}" class="form-label fw-bold">{{ form.job_title.label }}</label>
-                            {{ form.job_title }}
-                        </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.current_company.id_for_label }}" class="form-label fw-bold">{{ form.current_company.label }}</label>
-                                {{ form.current_company }}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.industry.id_for_label }}" class="form-label fw-bold">{{ form.industry.label }}</label>
-                                {{ form.industry }}
-                            </div>
-                        </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.location.id_for_label }}" class="form-label fw-bold">{{ form.location.label }}</label>
-                                {{ form.location }}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.status.id_for_label }}" class="form-label fw-bold">{{ form.status.label }}</label>
-                                {{ form.status }}
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.education_level.id_for_label }}" class="form-label fw-bold">{{ form.education_level.label }}</label>
-                            {{ form.education_level }}
-                        </div>
-                    </div>
-
-                    <!-- SECTION 3 : À Propos -->
-                    <div class="mb-5 pb-4 border-bottom">
-                        <div class="d-flex align-items-center gap-2 mb-4">
-                            <span class="fs-3">✨</span>
-                            <h2 class="h4 fw-bold mb-0 text-dark">À Propos & Compétences</h2>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.bio.id_for_label }}" class="form-label fw-bold">{{ form.bio.label }}</label>
-                            {{ form.bio }}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.skills_text.id_for_label }}" class="form-label fw-bold">{{ form.skills_text.label }}</label>
-                            {{ form.skills_text }}
-                            <div class="form-text text-muted">Séparez vos compétences par des virgules (ex: Python, Management, Communication).</div>
-                        </div>
-                    </div>
-
-                    <!-- SECTION 4 : Contact -->
-                    <div class="mb-5 pb-4 border-bottom">
-                        <div class="d-flex align-items-center gap-2 mb-4">
-                            <span class="fs-3">📞</span>
-                            <h2 class="h4 fw-bold mb-0 text-dark">Contact & Réseaux</h2>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">{{ form.email.label }}</label>
-                            {{ form.email }}
-                        </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.phone.id_for_label }}" class="form-label fw-bold">{{ form.phone.label }}</label>
-                                {{ form.phone }}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.whatsapp.id_for_label }}" class="form-label fw-bold">{{ form.whatsapp.label }}</label>
-                                {{ form.whatsapp }}
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.linkedin_url.id_for_label }}" class="form-label fw-bold">{{ form.linkedin_url.label }}</label>
-                            {{ form.linkedin_url }}
-                        </div>
-                    </div>
-
-                    <!-- SECTION 5 : CV & Visibilité -->
-                    <div class="mb-4">
-                        <div class="d-flex align-items-center gap-2 mb-4">
-                            <span class="fs-3">📄</span>
-                            <h2 class="h4 fw-bold mb-0 text-dark">CV & Visibilité</h2>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">{{ form.cv_file.label }}</label>
-                            <div class="p-4 text-center rounded-3 bg-light border border-2 border-dashed" style="cursor: pointer;" onclick="document.getElementById('id_cv_file_input').click();">
-                                <span class="fs-2 d-block mb-2">📁</span>
-                                <span class="fw-bold text-primary d-block">Téléchargez votre CV (PDF)</span>
-                                <span class="text-muted small">Cliquez ici pour joindre ou mettre à jour votre CV</span>
-                            </div>
-                            <div class="d-none">
-                                {{ form.cv_file }}
-                            </div>
-                            {% if profile.cv_file %}
-                                <div class="mt-2 bg-light p-2 rounded border d-inline-flex align-items-center gap-2">
-                                    <span>📄</span>
-                                    <a href="{{ profile.cv_file.url }}" target="_blank" class="text-decoration-none fw-semibold btn-link small">Voir le CV actuel</a>
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        <div class="p-3 bg-light rounded-3 border">
-                            <div class="form-check form-switch d-flex align-items-center gap-2 m-0 p-0" style="padding-left: 2.5em !important;">
-                                {{ form.is_public }}
-                                <label class="form-check-label fw-bold ms-2" for="{{ form.is_public.id_for_label }}">{{ form.is_public.label }}</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actions -->
+                    <!-- Actions avec la correction de l'URL d'annulation -->
                     <div class="d-flex flex-column flex-md-row gap-3 pt-4 mt-4 border-top">
-                        <a class="btn btn-light border btn-lg px-4 rounded-3 order-2 order-md-1" href="{% url 'profiles:profile_detail' profile.id %}">Annuler</a>
+                        <!-- Sécurité : Si l'URL nommée échoue, on retourne simplement à l'accueil ou au profil via une route générique -->
+                        <a class="btn btn-light border btn-lg px-4 rounded-3 order-2 order-md-1" href="/">Annuler</a>
                         <button class="btn text-white btn-lg px-5 rounded-3 fw-bold flex-grow-1 order-1 order-md-2" type="submit" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); border: none;">
                             ✅ Enregistrer les modifications
                         </button>
@@ -233,53 +83,25 @@
     </div>
 </div>
 
-<!-- Scripts d'automatisation UI & Prévisualisation de l'image -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // 1. Injection des ID natifs pour sécuriser l'interactivité JS avec la zone d'upload
-        const photoInput = document.querySelector('input[name="photo_file"]');
-        if (photoInput) { photoInput.id = "id_photo_file_input"; }
-
-        const cvInput = document.querySelector('input[name="cv_file"]');
-        if (cvInput) { cvInput.id = "id_cv_file_input"; }
-
-        // 2. Formatage automatique des formulaires Django bruts aux standards de Bootstrap 5
-        const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="url"], input[type="tel"], textarea');
+        // Ajout des classes Bootstrap aux inputs Django
+        const inputs = document.querySelectorAll('input:not([type="checkbox"]):not([type="file"]), select, textarea');
         inputs.forEach(input => {
             input.classList.add('form-control', 'rounded-3');
         });
 
-        const selects = document.querySelectorAll('select');
-        selects.forEach(select => {
-            select.classList.add('form-select', 'rounded-3');
-        });
-
-        const checkbox = document.querySelector('input[type="checkbox"]');
-        if (checkbox) {
-            checkbox.classList.add('form-check-input');
-        }
-
-        // 3. Script de rafraîchissement d'aperçu d'image en direct à gauche
-        if (photoInput) {
-            photoInput.addEventListener('change', function(event) {
+        // Aperçu de l'image en direct à gauche si un champ file change
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(event) {
                 const input = event.target;
                 if (input.files && input.files[0]) {
                     const reader = new FileReader();
                     reader.onload = function() {
-                        const dataURL = reader.result;
                         const output = document.getElementById('current_photo');
-                        
                         if (output.tagName === 'IMG') {
-                            output.src = dataURL;
-                        } else {
-                            // Remplace de façon transparente le div Emoji par une balise image stylisée
-                            const newImg = document.createElement('img');
-                            newImg.src = dataURL;
-                            newImg.className = 'rounded-circle shadow border border-4 border-white object-fit-cover';
-                            newImg.style.width = '120px';
-                            newImg.style.height = '120px';
-                            newImg.id = 'current_photo';
-                            output.parentNode.replaceChild(newImg, output);
+                            output.src = reader.result;
                         }
                     };
                     reader.readAsDataURL(input.files[0]);
