@@ -15,5 +15,5 @@ urlpatterns = [
     path('messages/', include('chat.urls', namespace='chat')),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG or not settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

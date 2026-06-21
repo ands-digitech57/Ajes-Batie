@@ -1,40 +1,114 @@
 ﻿{% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Profils | Ajes Connect{% endblock %}
 
 {% block content %}
-<section class="page-title">
-    <p class="eyebrow">Talents de la communaute</p>
-    <h1>Profils professionnels</h1>
-    <p>Recherchez un membre par nom, metier, competence, niveau ou localisation.</p>
-</section>
+<!-- En-tête de la page -->
+<div class="bg-light py-5 border-bottom mb-4">
+    <div class="container text-center text-md-start">
+        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold mb-2">Talents de la communauté</span>
+        <h1 class="fw-bold text-dark display-5">Profils professionnels</h1>
+        <p class="lead text-muted mb-0">Recherchez un membre par nom, métier, compétence, niveau ou localisation.</p>
+    </div>
+</div>
 
-<form class="search-bar" method="get">
-    <input type="search" name="q" value="{{ query }}" placeholder="Ex: informatique, couture, comptabilite">
-    <button class="btn" type="submit">Rechercher</button>
-</form>
+<div class="container mb-5">
+    <!-- Barre de recherche moderne -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <form method="get" class="card p-2 shadow-sm border-0 rounded-pill">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0 fs-5 ps-3">🔍</span>
+                    <input type="search" name="q" value="{{ query|default:'' }}" class="form-control border-0 bg-transparent fs-5" placeholder="Ex: informatique, couture, comptabilité..." aria-label="Rechercher un profil">
+                    <button class="btn px-4 text-white rounded-pill fw-bold" type="submit" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);">
+                        Rechercher
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<section class="cards-grid">
-    {% for profile in profiles %}
-        <article class="card">
-            {% if profile.photo_file %}
-                <img class="profile-photo" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}">
-            {% elif profile.photo_url %}
-                <img class="profile-photo" src="{{ profile.photo_url }}" alt="{{ profile.display_name }}">
-            {% endif %}
-            <p class="eyebrow">{{ profile.get_status_display }}</p>
-            <h2><a href="{{ profile.get_absolute_url }}">{{ profile.display_name }}</a></h2>
-            <p>{{ profile.job_title|default:'Profil professionnel' }}</p>
-            <div class="tags">
-                {% for skill in profile.skills.all %}
-                    <span>{{ skill.name }}</span>
-                {% empty %}
-                    <span>Competences a completer</span>
-                {% endfor %}
+    <!-- Grille des profils (Cards Grid) -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for profile in profiles %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden position-relative profile-card-hover transition">
+                    
+                    <!-- Badge de statut absolu en haut à droite -->
+                    <span class="position-absolute bg-white text-success border px-3 py-1 rounded-pill fw-bold small shadow-sm" style="top: 16px; right: 16px; z-index: 2; font-size: 0.8rem;">
+                        🎯 {{ profile.get_status_display }}
+                    </span>
+
+                    <div class="card-body p-4 text-center d-flex flex-column align-items-center">
+                        <!-- Photo de Profil miniature -->
+                        <div class="mb-3 mt-2">
+                            {% if profile.photo_file %}
+                                <img class="rounded-circle shadow-sm border border-3 border-white object-fit-cover" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}" style="width: 90px; height: 90px;">
+                            {% elif profile.photo_url %}
+                                <img class="rounded-circle shadow-sm border border-3 border-white object-fit-cover" src="{{ profile.photo_url }}" alt="{{ profile.display_name }}" style="width: 90px; height: 90px;">
+                            {% else %}
+                                <div class="rounded-circle shadow-sm border border-3 border-white d-flex align-items-center justify-content-center text-white mx-auto" style="width: 90px; height: 90px; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); font-size: 2.2rem;">👤</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Informations principales -->
+                        <h2 class="h5 fw-bold mb-1">
+                            <a href="{{ profile.get_absolute_url }}" class="text-dark text-decoration-none stretched-link">
+                                {{ profile.display_name }}
+                            </a>
+                        </h2>
+                        
+                        <p class="text-muted small fw-medium mb-3">{{ profile.job_title|default:'Profil professionnel' }}</p>
+                        
+                        <!-- Mini Métadonnées si renseignées -->
+                        {% if profile.location or profile.current_company %}
+                            <p class="text-secondary small mb-3">
+                                {% if profile.current_company %}🏢 {{ profile.current_company }}{% endif %}
+                                {% if profile.location %}<span class="mx-1">|</span> 📍 {{ profile.location }}{% endif %}
+                            </p>
+                        {% endif %}
+
+                        <!-- Compétences (Tags) -->
+                        <div class="mt-auto pt-2 w-100">
+                            <div class="d-flex flex-wrap justify-content-center gap-1">
+                                {% for skill in profile.skills.all|slice:":3" %}
+                                    <span class="badge bg-light text-dark border rounded-2 px-2 py-1" style="font-size: 0.75rem; font-weight: 500;">{{ skill.name }}</span>
+                                {% empty %}
+                                    <span class="text-muted small italic" style="font-size: 0.8rem;">Compétences à compléter</span>
+                                {% endfor %}
+                                <!-- Indicateur s'il y a plus de 3 compétences -->
+                                {% if profile.skills.all|length > 3 %}
+                                    <span class="badge bg-light text-secondary border rounded-2 px-2 py-1" style="font-size: 0.75rem;">+{{ profile.skills.all|length|add:"-3" }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </article>
-    {% empty %}
-        <p class="empty">Aucun profil public pour le moment.</p>
-    {% endfor %}
-</section>
+        {% empty %}
+            <!-- Cas vide -->
+            <div class="col-12 text-center py-5">
+                <div class="text-muted fs-1 mb-3">📭</div>
+                <h3 class="fw-bold text-secondary">Aucun profil trouvé</h3>
+                <p class="text-muted">Aucun membre public ne correspond à votre recherche ou n'est encore inscrit.</p>
+                {% if query %}
+                    <a href="{% url 'profiles:list' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mt-2">Réinitialiser la recherche</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Ajout d'une petite animation CSS fluide pour l'effet de survol des cartes -->
+<style>
+    .profile-card-hover {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .profile-card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.08)!important;
+    }
+</style>
 {% endblock %}
