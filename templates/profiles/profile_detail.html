@@ -7,14 +7,14 @@
 
 <section class="detail-layout" style="margin-top: -60px; position: relative; z-index: 10;">
     <article class="detail-main">
-        <div class="profile-header">
-            {% if profile.photo_file %}
-                <img class="profile-image" src="{{ profile.photo_file.url }}" alt="Photo de {{ profile.display_name }}">
-            {% block photo_url %}{% elif profile.photo_url %}
-                <img class="profile-image" src="{{ profile.photo_url }}" alt="Photo de {{ profile.display_name }}">
-            {% else %}
-                <div class="profile-image" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">👤</div>
-            {% endif %}
+       <div class="profile-header">
+             {% if profile.photo_file %}
+                 <img class="profile-image" src="{{ profile.photo_file.url }}" alt="Photo de {{ profile.display_name }}">
+                {% elif profile.photo_url %}
+                    <img class="profile-image" src="{{ profile.photo_url }}" alt="Photo de {{ profile.display_name }}">
+             {% else %}
+                    <div class="profile-image" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">👤</div>
+             {% endif %}
             <div class="profile-summary">
                 <p class="eyebrow">{{ profile.get_status_display }}</p>
                 <h1>{{ profile.display_name }}</h1>
