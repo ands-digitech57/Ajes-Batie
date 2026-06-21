@@ -1,114 +1,121 @@
 ﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Profils | Ajes Connect{% endblock %}
+{% block title %}Annuaire des Profils | Ajes Connect{% endblock %}
 
 {% block content %}
-<!-- En-tête de la page -->
-<div class="bg-light py-5 border-bottom mb-4">
-    <div class="container text-center text-md-start">
-        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold mb-2">Talents de la communauté</span>
-        <h1 class="fw-bold text-dark display-5">Profils professionnels</h1>
-        <p class="lead text-muted mb-0">Recherchez un membre par nom, métier, compétence, niveau ou localisation.</p>
-    </div>
-</div>
+<style>
+    /* Ajustement de la navbar si elle n'est pas gérée dans base.html */
+    .navbar-nav {
+        margin-left: auto !important; /* Pousse le menu à droite */
+    }
+    
+    .profile-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid #eef2f6;
+        background-color: #ffffff;
+    }
+    
+    .profile-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05) !important;
+    }
 
-<div class="container mb-5">
-    <!-- Barre de recherche moderne -->
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <form method="get" class="card p-2 shadow-sm border-0 rounded-pill">
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-0 fs-5 ps-3">🔍</span>
-                    <input type="search" name="q" value="{{ query|default:'' }}" class="form-control border-0 bg-transparent fs-5" placeholder="Ex: informatique, couture, comptabilité..." aria-label="Rechercher un profil">
-                    <button class="btn px-4 text-white rounded-pill fw-bold" type="submit" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);">
-                        Rechercher
-                    </button>
-                </div>
-            </form>
+    .avatar-container {
+        width: 70px;
+        height: 70px;
+        min-width: 70px;
+    }
+
+    .search-bar {
+        background-color: #f3f4f6;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    .search-bar:focus {
+        background-color: #ffffff;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+</style>
+
+<div class="bg-light py-5" style="min-height: 90vh;">
+    <div class="container">
+        
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-bold mb-2">Communauté</span>
+                <h1 class="fw-bold text-dark h2">Profils Professionnels</h1>
+                <p class="text-muted match-paragraph">Recherchez et connectez-vous avec les membres de la communauté.</p>
+                
+                <form method="GET" action="" class="mt-4">
+                    <div class="input-group p-2 bg-white shadow-sm rounded-4">
+                        <span class="input-group-text bg-transparent border-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" name="q" class="form-control search-bar rounded-3 border-0 py-2" placeholder="Ex: informatique, couture, comptable, Douala...">
+                        <button class="btn btn-primary px-4 rounded-3 fw-bold" type="submit">Rechercher</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Grille des profils (Cards Grid) -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for profile in profiles %}
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden position-relative profile-card-hover transition">
-                    
-                    <!-- Badge de statut absolu en haut à droite -->
-                    <span class="position-absolute bg-white text-success border px-3 py-1 rounded-pill fw-bold small shadow-sm" style="top: 16px; right: 16px; z-index: 2; font-size: 0.8rem;">
-                        🎯 {{ profile.get_status_display }}
-                    </span>
-
-                    <div class="card-body p-4 text-center d-flex flex-column align-items-center">
-                        <!-- Photo de Profil miniature -->
-                        <div class="mb-3 mt-2">
-                            {% if profile.photo_file %}
-                                <img class="rounded-circle shadow-sm border border-3 border-white object-fit-cover" src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}" style="width: 90px; height: 90px;">
-                            {% elif profile.photo_url %}
-                                <img class="rounded-circle shadow-sm border border-3 border-white object-fit-cover" src="{{ profile.photo_url }}" alt="{{ profile.display_name }}" style="width: 90px; height: 90px;">
-                            {% else %}
-                                <div class="rounded-circle shadow-sm border border-3 border-white d-flex align-items-center justify-content-center text-white mx-auto" style="width: 90px; height: 90px; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); font-size: 2.2rem;">👤</div>
-                            {% endif %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for profile in profiles %}
+                <div class="col">
+                    <div class="card h-100 profile-card shadow-sm rounded-4 p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1 small fw-semibold">
+                                🟢 Disponible
+                            </span>
                         </div>
 
-                        <!-- Informations principales -->
-                        <h2 class="h5 fw-bold mb-1">
-                            <a href="{{ profile.get_absolute_url }}" class="text-dark text-decoration-none stretched-link">
-                                {{ profile.display_name }}
-                            </a>
-                        </h2>
-                        
-                        <p class="text-muted small fw-medium mb-3">{{ profile.job_title|default:'Profil professionnel' }}</p>
-                        
-                        <!-- Mini Métadonnées si renseignées -->
-                        {% if profile.location or profile.current_company %}
-                            <p class="text-secondary small mb-3">
-                                {% if profile.current_company %}🏢 {{ profile.current_company }}{% endif %}
-                                {% if profile.location %}<span class="mx-1">|</span> 📍 {{ profile.location }}{% endif %}
-                            </p>
-                        {% endif %}
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="avatar-container position-relative">
+                                {% if profile.photo_file %}
+                                    <img src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}" class="w-100 h-100 rounded-circle object-fit-cover border border-2 border-light shadow-sm">
+                                {% elif profile.photo_url %}
+                                    <img src="{{ profile.photo_url }}" alt="{{ profile.display_name }}" class="w-100 h-100 rounded-circle object-fit-cover border border-2 border-light shadow-sm">
+                                {% else %}
+                                    <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); font-size: 1.5rem;">
+                                        {{ profile.display_name|slice:":1"|upper }}
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                        <!-- Compétences (Tags) -->
-                        <div class="mt-auto pt-2 w-100">
-                            <div class="d-flex flex-wrap justify-content-center gap-1">
-                                {% for skill in profile.skills.all|slice:":3" %}
-                                    <span class="badge bg-light text-dark border rounded-2 px-2 py-1" style="font-size: 0.75rem; font-weight: 500;">{{ skill.name }}</span>
-                                {% empty %}
-                                    <span class="text-muted small italic" style="font-size: 0.8rem;">Compétences à compléter</span>
-                                {% endfor %}
-                                <!-- Indicateur s'il y a plus de 3 compétences -->
-                                {% if profile.skills.all|length > 3 %}
-                                    <span class="badge bg-light text-secondary border rounded-2 px-2 py-1" style="font-size: 0.75rem;">+{{ profile.skills.all|length|add:"-3" }}</span>
+                            <div class="flex-grow-1 min-w-0">
+                                <h2 class="h6 fw-bold mb-1 text-dark text-truncate">
+                                    <a href="{% url 'profiles:profile_detail' profile.id %}" class="text-decoration-none text-dark stretched-link">
+                                        {{ profile.display_name }}
+                                    </a>
+                                </h2>
+                                <p class="text-primary small fw-semibold mb-1 text-truncate">
+                                    {{ profile.job_title|default:"Profession non renseignée" }}
+                                </p>
+                                {% if profile.location %}
+                                    <p class="text-muted x-small mb-2"><i class="bi bi-geo-alt-fill me-1"></i>{{ profile.location }}</p>
                                 {% endif %}
                             </div>
                         </div>
 
+                        <div class="border-top pt-2 mt-3">
+                            <p class="text-muted small mb-1" style="font-size: 0.75rem;">Compétences clés :</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% if profile.skills_text %}
+                                    <span class="badge bg-light text-secondary border rounded-pill px-2 py-1" style="font-size: 0.7rem;">En savoir plus</span>
+                                {% else %}
+                                    <span class="badge bg-light text-muted border rounded-pill px-2 py-1 italic" style="font-size: 0.7rem;">À compléter</span>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% empty %}
-            <!-- Cas vide -->
-            <div class="col-12 text-center py-5">
-                <div class="text-muted fs-1 mb-3">📭</div>
-                <h3 class="fw-bold text-secondary">Aucun profil trouvé</h3>
-                <p class="text-muted">Aucun membre public ne correspond à votre recherche ou n'est encore inscrit.</p>
-                {% if query %}
-                    <a href="{% url 'profiles:list' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 mt-2">Réinitialiser la recherche</a>
-                {% endif %}
-            </div>
-        {% endfor %}
+            {% empty %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Aucun profil ne correspond à votre recherche.</p>
+                </div>
+            {% endfor %}
+        </div>
+
     </div>
 </div>
-
-<!-- Ajout d'une petite animation CSS fluide pour l'effet de survol des cartes -->
-<style>
-    .profile-card-hover {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .profile-card-hover:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.08)!important;
-    }
-</style>
 {% endblock %}
