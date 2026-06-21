@@ -3,13 +3,15 @@
 {% block title %}Inscription | Ajes Connect{% endblock %}
 
 {% block content %}
-<div id="custom-signup-wrapper" style="display: flex !important; justify-content: center !important; align-items: center !important; min-height: 100vh !important; background-color: #f8fafc !important; padding: 60px 20px !important; box-sizing: border-box !important;">
+<!-- BLOC DE FORCE ABSOLUE POUR LE CENTRAGE -->
+<div id="final-clean-signup" style="display: flex !important; justify-content: center !important; align-items: center !important; min-height: 120vh !important; background-color: #f8fafc !important; padding: 60px 20px !important; width: 100% !important; box-sizing: border-box !important;">
     
-    <div style="background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important; padding: 40px !important; width: 100% !important; max-width: 600px !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03) !important; box-sizing: border-box !important;">
+    <!-- PANNEAU CENTRAL DE BASE TRÈS PROPRE -->
+    <div style="background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important; padding: 40px !important; width: 100% !important; max-width: 600px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; box-sizing: border-box !important;">
         
         <div style="text-align: center !important; margin-bottom: 30px !important;">
             <p style="font-size: 0.75rem !important; font-weight: 700 !important; color: #10b981 !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; margin: 0 0 4px 0 !important;">Membre</p>
-            <h1 style="font-size: 1.75rem !important; font-weight: 700 !important; color: #0f172a !important; margin: 0 0 8px 0 !important;">Créer mon profil professionnel</h1>
+            <h1 style="font-size: 1.75rem !important; font-weight: 700 !important; color: #0f172a !important; margin: 0 0 8px 0 !important;">Creer mon profil professionnel</h1>
             <p style="color: #64748b !important; font-size: 0.95rem !important; margin: 0 !important; line-height: 1.5 !important;">Inscrivez-vous et commencez à construire votre profil comme sur LinkedIn : photo, titre, compétences et CV.</p>
         </div>
 
@@ -21,53 +23,45 @@
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
-            
-            {% if form.errors %}
-                <div style="background-color: #fee2e2 !important; color: #991b1b !important; padding: 12px !important; border-radius: 6px !important; margin-bottom: 20px !important; font-size: 0.9rem !important;">
-                    {% for field, errs in form.errors.items %}
-                        {% for err in errs %}
-                            <p style="margin: 2px 0 !important;">⚠️ {{ err }}</p>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-            {% endif %}
 
+            <!-- SÉCURISATION DU STYLE POUR TES FIELDSETS D'ORIGINE -->
             <style>
-                #custom-signup-wrapper fieldset {
+                #final-clean-signup fieldset {
                     border: 1px solid #e2e8f0 !important;
                     border-radius: 8px !important;
                     padding: 20px !important;
                     margin: 0 0 24px 0 !important;
                     background-color: #f8fafc !important;
+                    display: block !important;
                 }
-                #custom-signup-wrapper legend {
+                #final-clean-signup legend {
                     font-size: 0.9rem !important;
                     font-weight: 700 !important;
                     color: #334155 !important;
                     padding: 0 8px !important;
                     text-transform: uppercase !important;
                     letter-spacing: 0.05em !important;
+                    display: block !important;
+                    width: auto !important;
                 }
-                #custom-signup-wrapper p {
+                #final-clean-signup p {
                     margin: 0 0 16px 0 !important;
+                    display: block !important;
                 }
-                #custom-signup-wrapper p:last-child {
-                    margin-bottom: 0 !important;
-                }
-                #custom-signup-wrapper label {
+                #final-clean-signup label {
                     display: block !important;
                     font-weight: 600 !important;
                     color: #475569 !important;
                     margin-bottom: 6px !important;
                     font-size: 0.875rem !important;
                 }
-                #custom-signup-wrapper input[type="text"],
-                #custom-signup-wrapper input[type="email"],
-                #custom-signup-wrapper input[type="password"],
-                #custom-signup-wrapper input[type="url"],
-                #custom-signup-wrapper input[type="tel"],
-                #custom-signup-wrapper select,
-                #custom-signup-wrapper textarea {
+                #final-clean-signup input[type="text"],
+                #final-clean-signup input[type="email"],
+                #final-clean-signup input[type="password"],
+                #final-clean-signup input[type="url"],
+                #final-clean-signup input[type="tel"],
+                #final-clean-signup select,
+                #final-clean-signup textarea {
                     width: 100% !important;
                     padding: 10px 14px !important;
                     border: 1px solid #cbd5e1 !important;
@@ -78,7 +72,7 @@
                     background-color: #ffffff !important;
                     color: #1e293b !important;
                 }
-                #custom-signup-wrapper input:focus, #custom-signup-wrapper select:focus, #custom-signup-wrapper textarea:focus {
+                #final-clean-signup input:focus, #final-clean-signup select:focus, #final-clean-signup textarea:focus {
                     border-color: #10b981 !important;
                     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
                 }
@@ -118,14 +112,15 @@
                 <p>{{ form.photo_file.label_tag }}{{ form.photo_file }}</p>
                 <p>{{ form.photo_url.label_tag }}{{ form.photo_url }}</p>
                 <p>{{ form.cv_file.label_tag }}{{ form.cv_file }}</p>
-                <p style="display: flex !important; align-items: center !important; flex-direction: row-reverse !important; justify-content: flex-end !important; gap: 8px !important; margin-top: 10px !important;">
+                <p style="display: flex !important; align-items: center !important; flex-direction: row-reverse !important; justify-content: flex-end !important; gap: 8px !important;">
                     {{ form.is_public.label_tag }}{{ form.is_public }}
                 </p>
             </fieldset>
 
+            <!-- BOUTON RECENTRE, STYLE MODERNE COMPACT -->
             <div style="text-align: center !important; margin-top: 30px !important;">
-                <button type="submit" style="width: 100% !important; max-width: 320px !important; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; color: white !important; border: none !important; padding: 12px !important; border-radius: 8px !important; font-weight: 600 !important; font-size: 1rem !important; cursor: pointer !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2) !important;">
-                    Créer mon compte
+                <button type="submit" style="width: 100% !important; max-width: 320px !important; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; color: white !important; border: none !important; padding: 14px !important; border-radius: 8px !important; font-weight: 600 !important; font-size: 1rem !important; cursor: pointer !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2) !important;">
+                    Creer mon compte
                 </button>
             </div>
         </form>
