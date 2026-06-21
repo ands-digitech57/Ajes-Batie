@@ -84,7 +84,8 @@
 
                             <div class="flex-grow-1 min-w-0">
                                 <h2 class="h6 fw-bold mb-1 text-dark text-truncate">
-                                    <a href="{% url 'profiles:profile_detail' profile.id %}" class="text-decoration-none text-dark stretched-link">
+                                    <!-- URL modifiée en chemin absolu sécurisé pour éviter l'erreur NoReverseMatch -->
+                                    <a href="/profils/{{ profile.id }}/" class="text-decoration-none text-dark stretched-link">
                                         {{ profile.display_name }}
                                     </a>
                                 </h2>
