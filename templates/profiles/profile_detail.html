@@ -3,16 +3,14 @@
 {% block title %}{{ profile.display_name }} | Ajes Connect{% endblock %}
 
 {% block content %}
-<!-- Profile Cover -->
 <div class="profile-cover" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 50%, #d4a574 100%);"></div>
 
 <section class="detail-layout" style="margin-top: -60px; position: relative; z-index: 10;">
     <article class="detail-main">
-        <!-- Profile Header -->
         <div class="profile-header">
             {% if profile.photo_file %}
                 <img class="profile-image" src="{{ profile.photo_file.url }}" alt="Photo de {{ profile.display_name }}">
-            {% elif profile.photo_url %}
+            {% block photo_url %}{% elif profile.photo_url %}
                 <img class="profile-image" src="{{ profile.photo_url }}" alt="Photo de {{ profile.display_name }}">
             {% else %}
                 <div class="profile-image" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">👤</div>
@@ -45,7 +43,6 @@
             </div>
         </div>
 
-        <!-- About Section -->
         {% if profile.bio %}
             <section class="section-gap" style="margin-top: 32px;">
                 <h2>À propos</h2>
@@ -53,7 +50,6 @@
             </section>
         {% endif %}
 
-        <!-- Skills Section -->
         <section class="section-gap">
             <h2>Compétences</h2>
             <div class="tags">
@@ -66,9 +62,7 @@
         </section>
     </article>
 
-    <!-- Right Sidebar -->
     <aside class="side-panel">
-        <!-- Contact Card -->
         <section>
             <h2>📞 Contact</h2>
             {% if profile.public_phone %}
@@ -95,9 +89,16 @@
                     <a href="{{ profile.cv_file.url }}" target="_blank" download>📄 Télécharger</a>
                 </p>
             {% endif %}
-        </section>
 
-        <!-- Education Card -->
+            {% if profile.user != request.user %}
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'chat:inbox_with_user' profile.user.id %}" style="display: block; width: 100%; padding: 12px; background-color: #0d6efd; color: white; text-align: center; border-radius: 8px; font-weight: 600; text-decoration: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        💬 Envoyer un message
+                    </a>
+                </div>
+            {% endif %}
+            </section>
+
         <section class="section-gap">
             <h2>🎓 Formation</h2>
             {% if profile.education_level %}
@@ -107,7 +108,6 @@
             {% endif %}
         </section>
 
-        <!-- Status Badge -->
         <section class="section-gap">
             <h2>Statut</h2>
             <div style="padding: 12px; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); color: white; border-radius: 8px; text-align: center; font-weight: 600;">

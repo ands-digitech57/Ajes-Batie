@@ -41,13 +41,17 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
+    
 
     'core',
     'accounts.apps.AccountsConfig',
     'profiles',
     'jobs',
     'journal',
+    'chat',
 ]
 
 
@@ -260,4 +264,12 @@ LOGGING = {
         'handlers': ['console'],
         'level': os.environ.get('LOG_LEVEL', 'WARNING'),
     },
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dnaui2bjg',
+    'API_KEY': '962766849786186',
+    'API_SECRET': 'B3QKogN_u--pcTzAe1zI4OvyJes',
 }

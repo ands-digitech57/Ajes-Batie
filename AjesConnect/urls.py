@@ -10,6 +10,9 @@ urlpatterns = [
     path('profils/', include('profiles.urls')),
     path('offres/', include('jobs.urls')),
     path('journal/', include('journal.urls')),
+    
+    # MODIFIEZ CETTE LIGNE ICI :
+    path('messages/', include('chat.urls', namespace='chat')),
 ]
 
 if settings.DEBUG:
