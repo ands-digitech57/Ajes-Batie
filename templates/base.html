@@ -82,6 +82,7 @@
     </a>
 
     <!-- À DROITE -->
+    <!-- À DROITE -->
     <nav class="main-nav">
         {% if user.is_authenticated %}
             <a href="{% url 'profiles:list' %}">Profils</a>
@@ -92,7 +93,20 @@
                 Notifications{% if unread_notifications_count %} <span style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 50px; font-size: 0.75rem;">{{ unread_notifications_count }}</span>{% endif %}
             </a>
             
-            <a href="{% url 'accounts:dashboard' %}">Mon espace</a>
+            <!-- BLOC PHOTO DE PROFIL ET MON ESPACE -->
+            <a href="{% url 'accounts:dashboard' %}" style="display: flex !important; align-items: center !important; gap: 8px !important;">
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="Profil" style="width: 28px !important; height: 28px !important; border-radius: 50% !important; object-fit: cover !important; border: 1px solid #eef2f6 !important;">
+                {% elif user.profile.photo %}
+                    <img src="{{ user.profile.photo.url }}" alt="Profil" style="width: 28px !important; height: 28px !important; border-radius: 50% !important; object-fit: cover !important; border: 1px solid #eef2f6 !important;">
+                {% else %}
+                    <!-- Image de secours si aucune photo n'est enregistrée -->
+                    <div style="width: 28px !important; height: 28px !important; background-color: #10b981 !important; color: white !important; border-radius: 50% !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-weight: bold !important; font-size: 0.85rem !important;">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+                <span>Mon espace</span>
+            </a>
 
             {% if user.is_staff %}
                 <a href="/admin/" style="color: #dc2626 !important;">Admin</a>
