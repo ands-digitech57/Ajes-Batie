@@ -1,104 +1,172 @@
 ﻿{% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Journal | Ajes Connect{% endblock %}
 
 {% block content %}
-<!-- SÉCURITÉ : CETTE BALISE ÉCRASE LES ANCIENS STYLES DE LA PAGE-TITLE ET FEED-GRID -->
+<!-- BLOC DE STYLE POUR AJUSTER LE DESIGN DE BASE SANS TOUT CASSER -->
 <style>
-    /* On neutralise les anciens conteneurs pour éviter les conflits */
-    .page-title, .feed-grid, .actions-bar, section {
-        display: none !important;
+    /* On applique un fond gris clair à toute la page du journal */
+    body {
+        background-color: #f0f2f5 !important;
     }
-    #fb-journal-container {
+    
+    /* En-tête de la page épuré */
+    .page-title {
+        text-align: center !important;
+        margin: 30px auto 20px auto !important;
+        max-width: 600px !important;
+    }
+    .page-title h1 {
+        font-size: 1.8rem !important;
+        color: #050505 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Barre d'action centrée pour le bouton de publication */
+    .actions-bar {
         display: flex !important;
+        justify-content: center !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Transformation de la grille en un flux vertical centré (Style Facebook) */
+    .feed-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 16px !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+        padding: 0 10px !important;
+    }
+
+    /* Style de la carte de publication */
+    .post-card {
+        background: #ffffff !important;
+        border: 1px solid #e4e6eb !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 16px !important;
+    }
+
+    /* En-tête interne de chaque post */
+    .post-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+        margin-bottom: 12px !important;
+    }
+    .post-header h2 a {
+        color: #050505 !important;
+        text-decoration: none !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+    }
+
+    /* Gestion des images et vidéos pour qu'elles prennent bien la largeur */
+    .post-media {
+        margin: 12px -16px !important;
+        background-color: #f0f2f5 !important;
+        text-align: center !important;
+    }
+    .post-media img, .post-media video {
+        max-width: 100% !important;
+        max-height: 450px !important;
+        display: block !important;
+        margin: 0 auto !important;
+        object-fit: contain !important;
+    }
+
+    /* Texte du post */
+    .post-content {
+        font-size: 0.95rem !important;
+        color: #050505 !important;
+        line-height: 1.5 !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Infos et Actions du post */
+    .post-meta {
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 0.85rem !important;
+        color: #65676b !important;
+        border-bottom: 1px solid #e4e6eb !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 8px !important;
+    }
+    .post-actions {
+        display: flex !important;
+        justify-content: space-around !important;
+    }
+    .post-actions a {
+        color: #65676b !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        padding: 6px 12px !important;
+        border-radius: 4px !important;
+    }
+    .post-actions a:hover {
+        background-color: #f2f2f2 !important;
     }
 </style>
 
-<!-- LE CONTENEUR UNIQUE ET FORCÉ STYLE FACEBOOK -->
-<div id="fb-journal-container" style="display: flex !important; justify-content: center !important; background-color: #f0f2f5 !important; min-height: 100vh !important; padding: 30px 10px !important; font-family: Segoe UI, Helvetica, Arial, sans-serif !important; box-sizing: border-box !important; width: 100% !important;">
-    
-    <!-- COLONNE DU FLUX CENTRAL (MAX 620PX COMME FB) -->
-    <div style="width: 100% !important; max-width: 620px !important; box-sizing: border-box !important; display: block !important;">
-        
-        <!-- ZONE CRÉATION DE POST (STYLE BOÎTE DE DIALOGUE FB) -->
-        {% if user.is_staff %}
-        <div style="background: #ffffff !important; border-radius: 8px !important; border: 1px solid #e4e6eb !important; padding: 12px 16px !important; margin-bottom: 16px !important; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important; display: flex !important; align-items: center !important; gap: 12px !important;">
-            <div style="width: 40px !important; height: 40px !important; background-color: #e4e6eb !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-weight: bold !important; color: #65676b !important;">
-                {{ user.username|slice:":1"|upper }}
-            </div>
-            <a href="{% url 'journal:create' %}" style="flex-grow: 1 !important; background-color: #f0f2f5 !important; border-radius: 20px !important; padding: 10px 16px !important; color: #65676b !important; text-decoration: none !important; font-size: 0.95rem !important; transition: background 0.2s !important;" onmouseover="this.style.backgroundColor='#e4e6eb'" onmouseout="this.style.backgroundColor='#f0f2f5'">
-                ✍️ Quoi de neuf pour la communauté, {{ user.first_name|default:user.username }} ?
-            </a>
-        </div>
-        {% endif %}
+<section class="page-title">
+    <p class="eyebrow">Communauté</p>
+    <h1>Journal d'actualités</h1>
+    <p>Les publications et annonces de la communauté Ajes</p>
+</section>
 
-        <!-- LES CARTES DES PUBLICATIONS -->
-        <div style="display: flex !important; flex-direction: column !important; gap: 16px !important; width: 100% !important;">
-            {% for post in posts %}
-                <article style="background: #ffffff !important; border-radius: 8px !important; border: 1px solid #e4e6eb !important; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important; padding: 12px 0 0 0 !important; box-sizing: border-box !important; display: block !important; width: 100% !important;">
-                    
-                    <!-- EN-TÊTE -->
-                    <header style="display: flex !important; justify-content: space-between !important; align-items: flex-start !important; padding: 0 16px !important; margin-bottom: 12px !important;">
-                        <div style="display: flex !important; gap: 12px !important; align-items: center !important;">
-                            <div style="width: 40px !important; height: 40px !important; background-color: #e7f3ff !important; color: #1877f2 !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 1.2rem !important;">
-                                📢
-                            </div>
-                            <div>
-                                <span style="font-size: 0.8rem !important; font-weight: 700 !important; color: #1877f2 !important; text-transform: uppercase !important; display: block !important;">{{ post.get_category_display }}</span>
-                                <h2 style="font-size: 1rem !important; font-weight: 700 !important; margin: 2px 0 0 0 !important;">
-                                    <a href="{{ post.get_absolute_url }}" style="color: #050505 !important; text-decoration: none !important;">{{ post.title }}</a>
-                                </h2>
-                            </div>
-                        </div>
-                        <span style="font-size: 0.85rem !important; color: #65676b !important;">{{ post.created_at|date:'d M Y' }}</span>
-                    </header>
+{% if user.is_staff %}
+<section class="actions-bar">
+    <a class="btn" href="{% url 'journal:create' %}">✍️ Publier une publication</a>
+</section>
+{% endif %}
 
-                    <!-- CONTENU TEXTE -->
-                    <div style="padding: 0 16px !important; margin-bottom: 12px !important; font-size: 0.95rem !important; color: #050505 !important; line-height: 1.5 !important;">
-                        <p style="margin: 0 !important;">{{ post.summary|default:post.content|truncatewords:45 }}</p>
-                    </div>
-
-                    <!-- IMAGES / VIDÉOS -->
-                    {% if post.image_file or post.image_url %}
-                        <div style="background-color: #f0f2f5 !important; margin-bottom: 10px !important; text-align: center !important; width: 100% !important;">
-                            {% if post.image_file %}
-                                <img src="{{ post.image_file.url }}" alt="{{ post.title }}" style="max-width: 100% !important; max-height: 500px !important; display: block !important; margin: 0 auto !important; object-fit: contain !important;">
-                            {% else %}
-                                <img src="{{ post.image_url }}" alt="{{ post.title }}" style="max-width: 100% !important; max-height: 500px !important; display: block !important; margin: 0 auto !important; object-fit: contain !important;">
-                            {% endif %}
-                        </div>
-                    {% elif post.video_file %}
-                        <div style="background-color: #000000 !important; margin-bottom: 10px !important; width: 100% !important;">
-                            <video controls src="{{ post.video_file.url }}" style="width: 100% !important; max-height: 450px !important; display: block !important;"></video>
-                        </div>
-                    {% endif %}
-
-                    <!-- LIKES -->
-                    <div style="display: flex !important; justify-content: space-between !important; padding: 10px 16px !important; margin: 0 16px !important; border-bottom: 1px solid #e4e6eb !important; font-size: 0.85rem !important; color: #65676b !important;">
-                        <div style="display: flex !important; align-items: center !important; gap: 4px !important;">
-                            <span style="background: #1877f2 !important; color: white !important; border-radius: 50% !important; width: 18px !important; height: 18px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 0.65rem !important;">👍</span>
-                            <span>{{ post.likes_count }} J'aime</span>
-                        </div>
-                        {% if post.event_date %}
-                            <div>📅 Événement : {{ post.event_date|date:'d/m/Y' }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- INTERACTIONS -->
-                    <div style="display: flex !important; padding: 4px 16px !important; justify-content: space-between !important; box-sizing: border-box !important;">
-                        <a href="{{ post.get_absolute_url }}#likes" style="flex: 1 !important; text-align: center !important; padding: 8px 0 !important; color: #65676b !important; text-decoration: none !important; font-weight: 600 !important; font-size: 0.9rem !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 6px !important;">👍 J'aime</a>
-                        <a href="{{ post.get_absolute_url }}" style="flex: 1 !important; text-align: center !important; padding: 8px 0 !important; color: #65676b !important; text-decoration: none !important; font-weight: 600 !important; font-size: 0.9rem !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 6px !important;">💬 Voir plus</a>
-                    </div>
-
-                </article>
-            {% empty %}
-                <div style="background: #ffffff !important; border-radius: 8px !important; border: 1px solid #e4e6eb !important; padding: 40px !important; text-align: center !important; color: #65676b !important;">
-                    <p style="margin: 0 !important; font-size: 1rem !important; font-weight: 600 !important;">📰 Aucune publication partagée pour le moment.</p>
+<section class="feed-grid">
+    {% for post in posts %}
+        <article class="post-card">
+            <header class="post-header">
+                <div>
+                    <p class="eyebrow">{{ post.get_category_display }}</p>
+                    <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
                 </div>
-            {% endfor %}
-        </div>
-
-    </div>
-</div>
+                <span class="muted">{{ post.created_at|date:'d M' }}</span>
+            </header>
+            
+            {% if post.image_file or post.image_url %}
+                <div class="post-media">
+                    {% if post.image_file %}
+                        <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+                    {% else %}
+                        <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                    {% endif %}
+                </div>
+            {% elif post.video_file %}
+                <div class="post-media video-media">
+                    <video controls src="{{ post.video_file.url }}"></video>
+                </div>
+            {% endif %}
+            
+            <div class="post-content">
+                <p>{{ post.summary|default:post.content|truncatewords:30 }}</p>
+            </div>
+            
+            <div class="post-meta">
+                <span>❤️ {{ post.likes_count }} like{% if post.likes_count != 1 %}s{% endif %}</span>
+                {% if post.event_date %}<span>📅 {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
+            </div>
+            
+            <div class="post-actions">
+                <a href="{{ post.get_absolute_url }}">Lire plus</a>
+                <a href="{{ post.get_absolute_url }}#likes">👍 J'aime</a>
+            </div>
+        </article>
+    {% empty %}
+        <p class="empty" style="text-align: center; color: #65676b; font-weight: 600;">📰 Aucune publication n'a encore été partagée</p>
+    {% endfor %}
+</section>
 {% endblock %}
