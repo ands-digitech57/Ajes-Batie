@@ -1,123 +1,61 @@
 ﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Inscription | Ajes Connect{% endblock %}
+{% block title %}Connexion | Ajes Connect{% endblock %}
 
 {% block content %}
-<div id="insta-signup-container" style="display: flex !important; justify-content: center !important; align-items: center !important; min-height: 90vh !important; background-color: #fafafa !important; padding: 40px 20px !important; width: 100% !important; box-sizing: border-box !important;">
+<!-- POSITIONNEMENT ABSOLU AU CENTRE DE L'ÉCRAN (STYLE INSTAGRAM DE CAPTURE_2.PNG) -->
+<div id="insta-login-wrapper" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; display: flex !important; justify-content: center !important; align-items: center !important; background-color: #ffffff !important; z-index: 9999 !important; box-sizing: border-box !important;">
     
-    <div style="background: #ffffff !important; border: 1px solid #dbdbdb !important; border-radius: 4px !important; padding: 40px !important; width: 100% !important; max-width: 450px !important; box-sizing: border-box !important; text-align: center !important;">
+    <!-- BLOC CENTRAL COMPACT -->
+    <div style="width: 100% !important; max-width: 350px !important; padding: 0 20px !important; box-sizing: border-box !important; text-align: center !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;">
         
-        <h1 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 12px 0;">Ajes Connect</h1>
-        <p style="color: #737373; font-size: 0.95rem; font-weight: 600; margin: 0 0 24px 0; line-height: 1.4;">
-            Inscrivez-vous pour voir les profils professionnels de la communauté.
-        </p>
+        <!-- En-tête avec flèche retour et titre -->
+        <div style="display: flex !important; align-items: center !important; justify-content: center !important; margin-bottom: 30px !important; position: relative !important;">
+            <a href="/" style="position: absolute !important; left: 0 !important; text-decoration: none !important; color: #000000 !important; font-size: 1.5rem !important; font-weight: 300 !important; line-height: 1 !important;">
+                ‹
+            </a>
+            <h1 style="font-size: 1.1rem !important; font-weight: 700 !important; color: #000000 !important; margin: 0 !important; letter-spacing: -0.2px !important;">
+                Se connecter à Ajes Connect
+            </h1>
+        </div>
 
-        <form method="post" enctype="multipart/form-data" style="text-align: left !important;">
+        <!-- Formulaire -->
+        <form method="post" action="" style="margin: 0 !important; padding: 0 !important;">
             {% csrf_token %}
             
-            {% if form.non_field_errors or form.errors %}
-                <div style="background-color: #fff2f2; color: #ed4956; padding: 12px; border-radius: 4px; border: 1px solid #ed4956; margin-bottom: 20px; font-size: 0.85rem;">
-                    Veuillez vérifier les informations saisies.
+            {% if form.non_field_errors %}
+                <div style="color: #ed4956 !important; font-size: 0.85rem !important; margin-bottom: 15px !important; text-align: center !important;">
+                    Identifiants incorrects. Veuillez réessayer.
                 </div>
             {% endif %}
 
-            <style>
-                #insta-signup-container fieldset {
-                    border: none !important;
-                    padding: 0 !important;
-                    margin: 0 0 20px 0 !important;
-                }
-                #insta-signup-container legend {
-                    display: block !important;
-                    width: 100% !important;
-                    font-size: 0.85rem !important;
-                    font-weight: 700 !important;
-                    text-transform: uppercase !important;
-                    color: #8e8e8e !important;
-                    margin-bottom: 10px !important;
-                    border-bottom: 1px solid #efefef !important;
-                    padding-bottom: 4px !important;
-                }
-                #insta-signup-container p {
-                    margin: 0 0 12px 0 !important;
-                }
-                #insta-signup-container label {
-                    display: block !important;
-                    font-size: 0.8rem !important;
-                    color: #262626 !important;
-                    margin-bottom: 4px !important;
-                    font-weight: 600 !important;
-                }
-                #insta-signup-container input[type="text"],
-                #insta-signup-container input[type="email"],
-                #insta-signup-container input[type="password"],
-                #insta-signup-container input[type="url"],
-                #insta-signup-container input[type="tel"],
-                #insta-signup-container select,
-                #insta-signup-container textarea {
-                    width: 100% !important;
-                    background: #fafafa !important;
-                    border: 1px solid #dbdbdb !important;
-                    border-radius: 3px !important;
-                    padding: 9px 12px !important;
-                    font-size: 0.85rem !important;
-                    outline: none !important;
-                    box-sizing: border-box !important;
-                    color: #262626 !important;
-                }
-                #insta-signup-container input:focus {
-                    border-color: #a8a8a8 !important;
-                }
-            </style>
+            <!-- Champ Identifiant -->
+            <div style="margin-bottom: 12px !important;">
+                <input type="text" name="username" id="id_username" placeholder="Numéro de mobile, nom de profil ou adresse e-mail" required 
+                       style="width: 100% !important; height: 50px !important; background: #fafafa !important; border: 1px solid #dbdbdb !important; border-radius: 12px !important; padding: 0 16px !important; font-size: 0.9rem !important; outline: none !important; box-sizing: border-box !important; color: #262626 !important;">
+            </div>
 
-            <fieldset>
-                <legend>Compte</legend>
-                <p>{{ form.username.label_tag }}{{ form.username }}</p>
-                <p>{{ form.email.label_tag }}{{ form.email }}</p>
-                <p>{{ form.password1.label_tag }}{{ form.password1 }}</p>
-                <p>{{ form.password2.label_tag }}{{ form.password2 }}</p>
-            </fieldset>
+            <!-- Champ Mot de passe -->
+            <div style="margin-bottom: 20px !important;">
+                <input type="password" name="password" id="id_password" placeholder="Mot de passe" required 
+                       style="width: 100% !important; height: 50px !important; background: #fafafa !important; border: 1px solid #dbdbdb !important; border-radius: 12px !important; padding: 0 16px !important; font-size: 0.9rem !important; outline: none !important; box-sizing: border-box !important; color: #262626 !important;">
+            </div>
 
-            <fieldset>
-                <legend>Identité</legend>
-                <p>{{ form.first_name.label_tag }}{{ form.first_name }}</p>
-                <p>{{ form.last_name.label_tag }}{{ form.last_name }}</p>
-            </fieldset>
-
-            <fieldset>
-                <legend>Profil professionnel</legend>
-                <p>{{ form.job_title.label_tag }}{{ form.job_title }}</p>
-                <p>{{ form.current_company.label_tag }}{{ form.current_company }}</p>
-                <p>{{ form.industry.label_tag }}{{ form.industry }}</p>
-                <p>{{ form.location.label_tag }}{{ form.location }}</p>
-                <p>{{ form.status.label_tag }}{{ form.status }}</p>
-                <p>{{ form.education_level.label_tag }}{{ form.education_level }}</p>
-                <p>{{ form.skills_text.label_tag }}{{ form.skills_text }}</p>
-                <p>{{ form.bio.label_tag }}{{ form.bio }}</p>
-            </fieldset>
-
-            <fieldset>
-                <legend>Contact et documents</legend>
-                <p>{{ form.phone.label_tag }}{{ form.phone }}</p>
-                <p>{{ form.whatsapp.label_tag }}{{ form.whatsapp }}</p>
-                <p>{{ form.linkedin_url.label_tag }}{{ form.linkedin_url }}</p>
-                <p>{{ form.photo_file.label_tag }}{{ form.photo_file }}</p>
-                <p>{{ form.photo_url.label_tag }}{{ form.photo_url }}</p>
-                <p>{{ form.cv_file.label_tag }}{{ form.cv_file }}</p>
-                <p style="display: flex !important; align-items: center !important; flex-direction: row-reverse !important; justify-content: flex-end !important; gap: 8px !important; margin-top: 15px !important;">
-                    {{ form.is_public.label_tag }}
-                    <input type="checkbox" name="is_public" id="id_is_public" style="margin: 0 !important; transform: scale(1.1) !important;">
-                </p>
-            </fieldset>
-
-            <button type="submit" style="width: 100% !important; background-color: #0095f6 !important; color: #ffffff !important; border: none !important; border-radius: 8px !important; padding: 7px 16px !important; font-weight: 700 !important; font-size: 0.9rem !important; cursor: pointer !important; margin-top: 10px !important;">
-                Inscription
+            <!-- Bouton bleu arrondi de la Capture_2.PNG -->
+            <button type="submit" 
+                    style="width: 100% !important; height: 44px !important; background-color: #0095f6 !important; opacity: 0.7 !important; color: #ffffff !important; border: none !important; border-radius: 22px !important; font-weight: 700 !important; font-size: 0.95rem !important; cursor: pointer !important; transition: opacity 0.2s !important;"
+                    onmouseover="this.style.opacity='1'" 
+                    onmouseout="this.style.opacity='0.7'">
+                Se connecter
             </button>
         </form>
 
-        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #dbdbdb !important; font-size: 0.9rem; color: #737373;">
-            Vous avez un compte ? <a href="{% url 'accounts:login' %}" style="color: #0095f6 !important; text-decoration: none !important; font-weight: 600 !important;">Connectez-vous</a>
+        <!-- Lien Mot de passe oublié -->
+        <div style="margin-top: 24px !important;">
+            <a href="{% url 'accounts:password_reset' %}" style="color: #00376b !important; text-decoration: none !important; font-size: 0.85rem !important; font-weight: 500 !important;">
+                Mot de passe oublié ?
+            </a>
         </div>
 
     </div>

@@ -1,32 +1,85 @@
 ﻿{% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Connexion | Ajes Connect{% endblock %}
 
 {% block content %}
-<section class="form-page">
-    <div class="form-panel">
-        <p class="eyebrow">Membre</p>
-        <h1>Connexion</h1>
-        <form method="post" class="login-form">
+<!-- CONTENEUR DE FORCE : CENTRE TOUT AU PIXEL PRÈS EN HAUTEUR ET LARGEUR (STYLE INSTAGRAM) -->
+<div id="insta-login-wrapper" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; display: flex !important; justify-content: center !important; align-items: center !important; background-color: #ffffff !important; z-index: 9999 !important; box-sizing: border-box !important;">
+    
+    <!-- BLOC CENTRAL COMPACT (350PX DE LARGEUR MAXIMUM COMME SUR LA CAPTURE_2.PNG) -->
+    <div style="width: 100% !important; max-width: 350px !important; padding: 0 20px !important; box-sizing: border-box !important; text-align: center !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;">
+        
+        <!-- En-tête : Flèche retour + Titre -->
+        <div style="display: flex !important; align-items: center !important; justify-content: center !important; margin-bottom: 32px !important; position: relative !important;">
+            <a href="/" style="position: absolute !important; left: 0 !important; text-decoration: none !important; color: #000000 !important; font-size: 1.5rem !important; font-weight: 300 !important; line-height: 1 !important;">
+                ‹
+            </a>
+            <h1 style="font-size: 1.1rem !important; font-weight: 700 !important; color: #000000 !important; margin: 0 !important; letter-spacing: -0.2px !important;">
+                Se connecter à Ajes Connect
+            </h1>
+        </div>
+
+        <!-- Formulaire de connexion -->
+        <form method="post" class="login-form" style="margin: 0 !important; padding: 0 !important; text-align: left !important;">
             {% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="form-group">
-                {{ form.username.label_tag }}
-                {{ form.username }}
-                {{ form.username.errors }}
+            
+            <!-- Erreurs globales -->
+            {% if form.non_field_errors %}
+                <div style="color: #ed4956 !important; font-size: 0.85rem !important; margin-bottom: 15px !important; text-align: center !important; font-weight: 500 !important;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- Champ Identifiant (Nom d'utilisateur) -->
+            <div style="margin-bottom: 12px !important; position: relative !important;">
+                <input type="text" name="username" id="id_username" placeholder="Numéro de mobile, nom de profil ou adresse e-mail" required 
+                       style="width: 100% !important; height: 50px !important; background: #fafafa !important; border: 1px solid #dbdbdb !important; border-radius: 12px !important; padding: 0 16px !important; font-size: 0.9rem !important; outline: none !important; box-sizing: border-box !important; color: #262626 !important;">
+                {% if form.username.errors %}
+                    <span style="color: #ed4956 !important; font-size: 0.75rem !important; display: block !important; margin-top: 4px !important;">{{ form.username.errors }}</span>
+                {% endif %}
             </div>
-            <div class="form-group password-field">
-                {{ form.password.label_tag }}
-                {{ form.password }}
-                <button type="button" class="password-toggle" id="togglePassword" aria-label="Afficher le mot de passe">👁</button>
-                {{ form.password.errors }}
+
+            <!-- Champ Mot de passe avec ton bouton toggle intégré proprement -->
+            <div style="margin-bottom: 24px !important; position: relative !important; display: flex !important; align-items: center !important;">
+                <input type="password" name="password" id="id_password" placeholder="Mot de passe" required 
+                       style="width: 100% !important; height: 50px !important; background: #fafafa !important; border: 1px solid #dbdbdb !important; border-radius: 12px !important; padding: 0 45px 0 16px !important; font-size: 0.9rem !important; outline: none !important; box-sizing: border-box !important; color: #262626 !important;">
+                
+                <button type="button" id="togglePassword" aria-label="Afficher le mot de passe" 
+                        style="position: absolute !important; right: 14px !important; background: none !important; border: none !important; cursor: pointer !important; font-size: 1.1rem !important; padding: 0 !important; color: #737373 !important; user-select: none !important;">
+                    👁
+                </button>
+                
+                {% if form.password.errors %}
+                    <span style="color: #ed4956 !important; font-size: 0.75rem !important; display: block !important; margin-top: 4px !important;">{{ form.password.errors }}</span>
+                {% endif %}
             </div>
-            <button class="btn" type="submit">Se connecter</button>
-            <p class="muted"><a href="{% url 'accounts:password_reset' %}">Mot de passe oublié ?</a></p>
+
+            <!-- Bouton de connexion moins large et arrondi (Style Capture_2.PNG) -->
+            <button class="btn" type="submit" 
+                    style="width: 100% !important; height: 44px !important; background-color: #0095f6 !important; opacity: 0.7 !important; color: #ffffff !important; border: none !important; border-radius: 22px !important; font-weight: 700 !important; font-size: 0.95rem !important; cursor: pointer !important; transition: opacity 0.2s !important; text-align: center !important;"
+                    onmouseover="this.style.opacity='1'" 
+                    onmouseout="this.style.opacity='0.7'">
+                Se connecter
+            </button>
         </form>
-        <p class="muted">Pas encore de compte ? <a href="{% url 'accounts:signup' %}">Inscrivez-vous</a>.</p>
+
+        <!-- Mot de passe oublié -->
+        <div style="margin-top: 24px !important;">
+            <a href="{% url 'accounts:password_reset' %}" style="color: #00376b !important; text-decoration: none !important; font-size: 0.85rem !important; font-weight: 600 !important;">
+                Mot de passe oublié ?
+            </a>
+        </div>
+
+        <!-- Inscription -->
+        <div style="margin-top: 40px !important; font-size: 0.9rem !important; color: #737373 !important;">
+            Pas encore de compte ? <a href="{% url 'accounts:signup' %}" style="color: #0095f6 !important; text-decoration: none !important; font-weight: 600 !important;">Inscrivez-vous</a>.
+        </div>
+
     </div>
-</section>
+</div>
+
+<!-- Ton script JS d'origine pour afficher le mot de passe, préservé à 100% -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const toggle = document.querySelector('#togglePassword');
