@@ -1,0 +1,59 @@
+{% load i18n admin_urls static %}
+<div class="inline-group" id="{{ inline_admin_formset.formset.prefix }}-group">
+  <div class="tabular inline-related {% if forloop.last %}last-related{% endif %}">
+    {{ inline_admin_formset.formset.management_form }}
+    <fieldset class="module {{ inline_admin_formset.classes }}">
+      <h2>{{ inline_admin_formset.opts.verbose_name_plural|capfirst }}</h2>
+      
+      <div style="padding: 15px; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 6px; text-align: center; margin-bottom: 15px;">
+          <label for="fb-multi-upload" style="background: #1877f2; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-block;">
+              📸 Sélectionner plusieurs photos / vidéos d'un coup
+          </label>
+          <input type="file" id="fb-multi-upload" multiple accept="image/*,video/*" style="display: none;">
+          <p style="margin: 8px 0 0 0; color: #64748b; font-size: 0.85rem;">Les fichiers s'ajouteront automatiquement aux lignes ci-dessous.</p>
+      </div>
+
+      <div class="fb-rows-container">
+          {% include "admin/edit_inline/tabular.html" %}
+      </div>
+    </fieldset>
+  </div>
+</div>
+
+<script>
+document.getElementById('fb-multi-upload').addEventListener('change', function(e) {
+    const files = e.target.files;
+    let currentRow = 0;
+    
+    for (let i = 0; i < files.length; i++) {
+        // Recherche une ligne vide disponible
+        let fileInput = document.querySelector(`#id_media_items-${currentRow}-file`);
+        let typeSelect = document.querySelector(`#id_media_items-${currentRow}-media_type`);
+        
+        // Si Django n'a plus de lignes vides, on clique sur "Ajouter un autre"
+        if (!fileInput) {
+            const addRowBtn = document.querySelector('#media_items-group .add-row a');
+            if (addRowBtn) {
+                addRowBtn.click();
+                fileInput = document.querySelector(`#id_media_items-${currentRow}-file`);
+                typeSelect = document.querySelector(`#id_media_items-${currentRow}-media_type`);
+            }
+        }
+        
+        if (fileInput) {
+            // Insère le fichier dans le champ Django
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(files[i]);
+            fileInput.files = dataTransfer.files;
+            
+            // Détecte automatiquement s'il s'agit d'une vidéo ou d'une image
+            if (files[i].type.startsWith('video/')) {
+                typeSelect.value = 'video';
+            } else {
+                typeSelect.value = 'image';
+            }
+        }
+        currentRow++;
+    }
+});
+</script>

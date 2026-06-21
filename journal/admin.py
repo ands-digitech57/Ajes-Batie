@@ -3,7 +3,8 @@ from .models import JournalPost, JournalPostMedia, JournalPostLike, JournalPostC
 
 class JournalPostMediaInline(admin.TabularInline):
     model = JournalPostMedia
-    extra = 3  # Te donne 3 cases par défaut pour ajouter des photos/vidéos d'un coup
+    extra = 3 # Te donne 3 cases par défaut pour ajouter des photos/vidéos d'un coup
+    template = 'admin/journal_inline.html' # <-- AJOUTE CETTE LIGNE EXACTEMENT ICI
 
 @admin.register(JournalPost)
 class JournalPostAdmin(admin.ModelAdmin):
