@@ -49,7 +49,7 @@ def signup(request):
                     profile.skills.set(skills)
 
             login(request, user)
-            return redirect('profiles:edit')
+            return redirect('accounts:dashboard')
     else:
         form = SignUpForm()
 
