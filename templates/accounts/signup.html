@@ -1,29 +1,102 @@
 ﻿{% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Inscription | Ajes Connect{% endblock %}
 
 {% block content %}
-<section class="form-page">
-    <div class="form-panel">
-        <p class="eyebrow">Membre</p>
-        <h1>Creer mon profil professionnel</h1>
-        <p>Inscrivez-vous et commencez à construire votre profil comme sur LinkedIn : photo, titre, compétences et CV.</p>
+<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f8fafc; padding: 40px 20px; width: 100%; box-sizing: border-box;">
+    
+    <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); width: 100%; max-width: 650px; box-sizing: border-box;">
+        
+        <div style="margin-bottom: 32px; text-align: center;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">Membre</span>
+            <h1 style="font-size: 1.75rem; font-weight: 700; color: #1f2937; margin: 0 0 8px 0;">Créer mon profil professionnel</h1>
+            <p style="color: #6b7280; font-size: 0.95rem; margin: 0; line-height: 1.5;">Inscrivez-vous et commencez à construire votre profil : photo, titre, compétences et CV.</p>
+        </div>
+
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            
             {% if form.non_field_errors %}
-                <div class="form-errors">{{ form.non_field_errors }}</div>
+                <div style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+                    {{ form.non_field_errors }}
+                </div>
             {% endif %}
+            
             {% if form.errors %}
-                <div class="form-errors">
+                <div style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
                     {% for field, errs in form.errors.items %}
                         {% for err in errs %}
-                            <p>{{ err }}</p>
+                            <p style="margin: 2px 0;">⚠️ <strong>{{ field }} :</strong> {{ err }}</p>
                         {% endfor %}
                     {% endfor %}
                 </div>
             {% endif %}
 
-            <fieldset>
+            <style>
+                .form-panel-fieldset {
+                    border: 1px solid #f3f4f6 !important;
+                    border-radius: 12px !important;
+                    padding: 20px !important;
+                    margin-bottom: 24px !important;
+                    background: #fbfcfd !important;
+                }
+                .form-panel-fieldset legend {
+                    font-size: 0.95rem !important;
+                    font-weight: 700 !important;
+                    color: #111827 !important;
+                    padding: 0 10px !important;
+                    float: none !important;
+                    width: auto !important;
+                    margin: 0 !important;
+                }
+                .form-panel-fieldset p {
+                    margin-bottom: 16px !important;
+                    margin-top: 0 !important;
+                }
+                .form-panel-fieldset p:last-child {
+                    margin-bottom: 0 !important;
+                }
+                .form-panel-fieldset label {
+                    display: block !important;
+                    font-weight: 600 !important;
+                    color: #4b5563 !important;
+                    margin-bottom: 6px !important;
+                    font-size: 0.875rem !important;
+                }
+                .form-panel-fieldset input[type="text"],
+                .form-panel-fieldset input[type="email"],
+                .form-panel-fieldset input[type="password"],
+                .form-panel-fieldset input[type="url"],
+                .form-panel-fieldset input[type="tel"],
+                .form-panel-fieldset select,
+                .form-panel-fieldset textarea {
+                    width: 100% !important;
+                    padding: 10px 14px !important;
+                    border: 1px solid #d1d5db !important;
+                    border-radius: 8px !important;
+                    outline: none !important;
+                    font-size: 0.95rem !important;
+                    box-sizing: border-box !important;
+                    background-color: #ffffff !important;
+                }
+                .form-panel-fieldset input:focus, .form-panel-fieldset select:focus, .form-panel-fieldset textarea:focus {
+                    border-color: #10b981 !important;
+                    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+                }
+                .form-panel-fieldset input[type="checkbox"] {
+                    margin-right: 8px !important;
+                    transform: scale(1.1) !important;
+                }
+                .form-panel-fieldset .helptext {
+                    display: block !important;
+                    font-size: 0.8rem !important;
+                    color: #9ca3af !important;
+                    margin-top: 4px !important;
+                }
+            </style>
+
+            <fieldset class="form-panel-fieldset">
                 <legend>Compte</legend>
                 <p>{{ form.username.label_tag }}{{ form.username }}</p>
                 <p>{{ form.email.label_tag }}{{ form.email }}</p>
@@ -31,13 +104,13 @@
                 <p>{{ form.password2.label_tag }}{{ form.password2 }}</p>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="form-panel-fieldset">
                 <legend>Identité</legend>
                 <p>{{ form.first_name.label_tag }}{{ form.first_name }}</p>
                 <p>{{ form.last_name.label_tag }}{{ form.last_name }}</p>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="form-panel-fieldset">
                 <legend>Profil professionnel</legend>
                 <p>{{ form.job_title.label_tag }}{{ form.job_title }}</p>
                 <p>{{ form.current_company.label_tag }}{{ form.current_company }}</p>
@@ -49,7 +122,7 @@
                 <p>{{ form.bio.label_tag }}{{ form.bio }}</p>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="form-panel-fieldset">
                 <legend>Contact et documents</legend>
                 <p>{{ form.phone.label_tag }}{{ form.phone }}</p>
                 <p>{{ form.whatsapp.label_tag }}{{ form.whatsapp }}</p>
@@ -57,11 +130,17 @@
                 <p>{{ form.photo_file.label_tag }}{{ form.photo_file }}</p>
                 <p>{{ form.photo_url.label_tag }}{{ form.photo_url }}</p>
                 <p>{{ form.cv_file.label_tag }}{{ form.cv_file }}</p>
-                <p>{{ form.is_public.label_tag }}{{ form.is_public }}</p>
+                <p style="display: flex; align-items: center; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; margin-top: 10px;">
+                    {{ form.is_public.label_tag }}{{ form.is_public }}
+                </p>
             </fieldset>
 
-            <button class="btn" type="submit">Creer mon compte</button>
+            <div style="text-align: center; margin-top: 32px;">
+                <button type="submit" style="width: 100%; max-width: 350px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); transition: transform 0.2s, opacity 0.2s;" onmouseover="this.style.opacity='0.95'" onmouseout="this.style.opacity='1'">
+                    Créer mon compte
+                </button>
+            </div>
         </form>
     </div>
-</section>
+</div>
 {% endblock %}
