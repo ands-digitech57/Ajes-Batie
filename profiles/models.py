@@ -1,8 +1,8 @@
 ﻿from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from cloudinary.models import CloudinaryField
 from .validators import validate_image_file, validate_cv_file
-
 
 class Skill(models.Model):
     name = models.CharField(max_length=80, unique=True)
@@ -34,7 +34,10 @@ class Profile(models.Model):
     phone = models.CharField(max_length=30, blank=True)
     whatsapp = models.CharField(max_length=30, blank=True)
     linkedin_url = models.URLField(blank=True)
-    photo_file = models.FileField(upload_to='profile_photos/', blank=True, null=True, validators=[validate_image_file])
+    
+    # MODIFICATION ICI : photo_file passe sur Cloudinary pour un stockage permanent
+    photo_file = CloudinaryField('image', default='default_avatar.png', blank=True, null=True)
+    
     cv_file = models.FileField(upload_to='cvs/', blank=True, null=True, validators=[validate_cv_file])
     photo_url = models.URLField(blank=True)
     email = models.EmailField(blank=True)
