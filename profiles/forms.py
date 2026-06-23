@@ -90,7 +90,11 @@ class ProfileForm(forms.ModelForm):
         super().save_m2m()
         if hasattr(self, '_pending_skills'):
             skills_text = self._pending_skills
-            names = [item.strip().lower() for item in skills_text.split(',') if item.strip()]
+            names = sorted({
+    name.strip().lower()
+    for name in skills_text.split(",")
+    if name.strip()
+})
             skills = []
             for name in names:
                 skill, _ = Skill.objects.get_or_create(name=name)

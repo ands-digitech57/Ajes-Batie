@@ -2,7 +2,7 @@
 from django.db import models
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
-from .validators import validate_image_file, validate_cv_file
+from .validators import validate_cv_file
 
 class Skill(models.Model):
     name = models.CharField(max_length=80, unique=True)
@@ -15,27 +15,30 @@ class Skill(models.Model):
 
 
 class Profile(models.Model):
-    STATUS_CHOICES = [
-        ('available', 'Disponible'),
-        ('employed', 'En activite'),
-        ('student', 'Etudiant'),
-        ('unavailable', 'Non disponible'),
-    ]
+    # Classe interne TextChoices parfaitement indentée à 4 espaces
+    class Status(models.TextChoices):
+        AVAILABLE = "available", "Disponible"
+        EMPLOYED = "employed", "En activité"
+        STUDENT = "student", "Étudiant"
+        UNAVAILABLE = "unavailable", "Non disponible"
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     job_title = models.CharField(max_length=150, blank=True)
     current_company = models.CharField(max_length=150, blank=True)
     industry = models.CharField(max_length=120, blank=True)
     bio = models.TextField(blank=True)
-    skills = models.ManyToManyField(Skill, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
+    skills = models.ManyToManyField(Skill, related_name="profiles", blank=True)
+    
+    # Utilisation propre de Status.choices maintenant qu'il est bien déclaré au-dessus
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.AVAILABLE)
+    
     education_level = models.CharField(max_length=120, blank=True)
     location = models.CharField(max_length=120, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     whatsapp = models.CharField(max_length=30, blank=True)
     linkedin_url = models.URLField(blank=True)
     
-    # MODIFICATION ICI : photo_file passe sur Cloudinary pour un stockage permanent
+    # Stockage Cloudinary permanent pour la photo de profil
     photo_file = CloudinaryField('image', default='default_avatar.png', blank=True, null=True)
     
     cv_file = models.FileField(upload_to='cvs/', blank=True, null=True, validators=[validate_cv_file])
@@ -53,8 +56,7 @@ class Profile(models.Model):
 
     @property
     def display_name(self):
-        full_name = f'{self.user.first_name} {self.user.last_name}'.strip()
-        return full_name or self.user.username
+        return self.user.get_full_name() or self.user.username
 
     @property
     def public_phone(self):
