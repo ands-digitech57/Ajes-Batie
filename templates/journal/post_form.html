@@ -3,15 +3,147 @@
 {% block title %}Publier une publication | Ajes Connect{% endblock %}
 
 {% block content %}
-<section class="form-page">
-    <div class="form-panel">
-        <p class="eyebrow">Administration</p>
+<style>
+    body {
+        background-color: #f8fafc !important;
+    }
+    .form-container {
+        max-width: 650px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .form-header {
+        margin-bottom: 24px;
+    }
+    .form-header h1 {
+        font-size: 1.6rem;
+        color: #0f172a;
+        font-weight: 700;
+        margin: 0 0 4px 0;
+    }
+    .form-header p {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    /* Structure des lignes du formulaire */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 18px;
+    }
+    .form-group label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #334155;
+    }
+    
+    /* Input design moderne */
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        color: #0f172a;
+        box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+    
+    /* Personnalisation des boutons de fichiers */
+    .form-group input[type="file"] {
+        padding: 6px 0;
+        font-size: 0.9rem;
+    }
+
+    /* Checkbox alignement */
+    .form-group-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    .form-group-checkbox input {
+        width: 16px;
+        height: 16px;
+        accent-color: #10b981;
+    }
+
+    /* Actions */
+    .form-actions {
+        margin-top: 28px;
+    }
+    .btn-submit {
+        width: 100%;
+        background-color: #10b981;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-submit:hover {
+        background-color: #059669;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <span style="color: #10b981; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">Administration</span>
         <h1>Publier une publication</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="btn" type="submit">Publier</button>
-        </form>
+        <p>Ajoutez un article, un événement ou une annonce au journal de la communauté.</p>
     </div>
-</section>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_block %}
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div style="background-color: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem;">
+                <strong>Veuillez corriger les erreurs suivantes :</strong>
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            {% if field.field.widget.input_type == "checkbox" %}
+                <div class="form-group-checkbox">
+                    {{ field }}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small style="color: #64748b; font-size: 0.8rem;">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">🚀 Confirmer et publier</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
