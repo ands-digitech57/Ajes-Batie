@@ -4,8 +4,8 @@ from . import views
 app_name = 'journal'
 
 urlpatterns = [
-    path('', views.post_list, name='list'),
-    path('publier/', views.post_create, name='create'),
-    path('aimer/<slug:slug>/', views.post_like, name='like'),
-    path('<slug:slug>/', views.post_detail, name='detail'),
+    path('', views.post_list, name='post_list'),
+    path('creer/', views.post_create, name='post_create'),
+    path('<slug:slug>/', views.post_detail, name='post_detail'),
+    path('<slug:slug>/like/', views.post_like, name='post_like'),
 ]
