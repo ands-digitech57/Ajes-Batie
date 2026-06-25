@@ -12,7 +12,8 @@ from .models import JournalPost, JournalPostComment, JournalPostLike
 
 def post_list(request):
     """Affiche la liste de toutes les publications publiées."""
-    posts = JournalPost.objects.filter(is_published=True).prefetch_related('media_items')
+    # Tri par date de création décroissante pour avoir les derniers articles en haut
+    posts = JournalPost.objects.filter(is_published=True).prefetch_related('media_items').order_by('-created_at')
     return render(request, 'journal/post_list.html', {'posts': posts})
 
 def post_detail(request, slug):
@@ -31,7 +32,6 @@ def post_detail(request, slug):
             comment.user = request.user
             comment.save()
             messages.success(request, 'Votre commentaire a été enregistré avec succès.')
-            # CORRECTION : Redirection par URL explicite pour éviter les blocages de reverse
             return redirect(f'/journal/{post.slug}/')
         else:
             messages.error(request, "Impossible d'enregistrer le commentaire. Veuillez vérifier le texte.")
@@ -52,6 +52,7 @@ def post_create(request):
         return redirect('/journal/')
 
     if request.method == 'POST':
+        # request.FILES intercepte l'ensemble des fichiers téléversés
         form = JournalPostForm(request.POST, request.FILES)
         
         if form.is_valid():
@@ -71,8 +72,15 @@ def post_create(request):
                 post.slug = slug
                 post.save()
                 
-                # Sauvegarde des relations Many-to-Many et fichiers
+                # Sauvegarde des relations Many-to-Many standard
                 form.save_m2m()
+                
+                # RECONSTRUCTION DE LA GALERIE MÉDIA SI TU UTILISES UN INLINE FORMSET
+                # Si ton JournalPostForm contient un formset pour media_items, on le gère ici :
+                if hasattr(form, 'media_formset'):
+                    media_formset = form.media_formset(request.POST, request.FILES, instance=post)
+                    if media_formset.is_valid():
+                        media_formset.save()
                 
                 # Système de notification isolé
                 try:
