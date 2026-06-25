@@ -3,6 +3,131 @@
 {% block title %}Notifications | Ajes Connect{% endblock %}
 
 {% block content %}
+<style>
+    /* Fond global et typographie */
+    body {
+        background-color: #f8fafc !important;
+        font-family: 'Segoe UI', system-ui, sans-serif !important;
+    }
+
+    /* Centre d'en-tête de page */
+    .page-title {
+        text-align: center !important;
+        padding: 40px 20px 20px 20px !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+    }
+    .page-title .eyebrow {
+        color: #10b981 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 6px !important;
+    }
+    .page-title h1 {
+        font-size: 2rem !important;
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        margin: 0 0 10px 0 !important;
+        letter-spacing: -0.5px !important;
+    }
+    .page-title p {
+        color: #64748b !important;
+        font-size: 1rem !important;
+        margin: 0 !important;
+    }
+
+    /* Conteneur de la liste des notifications */
+    .list-stack {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        max-width: 600px !important;
+        margin: 0 auto !important;
+        padding: 0 16px 60px 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Structure de la carte de notification cliquable */
+    .notification-card {
+        display: block !important;
+        text-decoration: none !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 16px 20px !important;
+        box-sizing: border-box !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+        position: relative !important;
+    }
+    .notification-card:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+        background-color: #fafafa !important;
+    }
+
+    /* État Non Lu - Style moderne (Fond bleuté léger et bordure gauche) */
+    .notification-card.unread {
+        background-color: #f0f7ff !important;
+        border-left: 4px solid #3b82f6 !important;
+    }
+    .notification-card.unread:hover {
+        background-color: #e6f0fa !important;
+    }
+
+    /* En-tête interne */
+    .notification-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 6px !important;
+        gap: 12px !important;
+    }
+    .notification-header strong {
+        font-size: 0.95rem !important;
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+    .notification-header .muted {
+        color: #94a3b8 !important;
+        font-size: 0.8rem !important;
+        font-weight: 500 !important;
+        white-space: nowrap !important;
+    }
+
+    /* Message de la notification */
+    .notification-card p {
+        color: #475569 !important;
+        font-size: 0.92rem !important;
+        line-height: 1.4 !important;
+        margin: 0 !important;
+    }
+
+    /* Pastille ou icône discrète pour le statut non lu */
+    .status-icon {
+        font-size: 1.1rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+
+    /* Style si aucune notification */
+    .empty {
+        text-align: center !important;
+        padding: 40px !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        color: #64748b !important;
+        font-weight: 600 !important;
+        font-size: 1.05rem !important;
+        margin: 0 !important;
+    }
+</style>
+
 <section class="page-title">
     <p class="eyebrow">Centre de notifications</p>
     <h1>Mes notifications</h1>
@@ -11,23 +136,24 @@
 
 <section class="list-stack">
     {% for notification in notifications %}
-        <article class="notification-card{% if not notification.is_read %} unread{% endif %}">
+        <a class="notification-card{% if not notification.is_read %} unread{% endif %}" href="{{ notification.link|default:'#' }}">
             <div class="notification-header">
                 <strong>
-                    {% if not notification.is_read %}
-                        🔔
-                    {% else %}
-                        ✓
-                    {% endif %}
+                    <span class="status-icon">
+                        {% if notification.type == 'journal' %}
+                            📰
+                        {% elif notification.type == 'job' %}
+                            💼
+                        {% else %}
+                            🔔
+                        {% endif %}
+                    </span>
                     {{ notification.title }}
                 </strong>
-                <span class="muted">{{ notification.created_at|date:'d/m/Y H:i' }}</span>
+                <span class="muted">{{ notification.created_at|date:'d M Y à H:i' }}</span>
             </div>
             <p>{{ notification.message }}</p>
-            {% if notification.link %}
-                <a class="btn secondary" href="{{ notification.link }}" style="margin-top: 12px;">Voir →</a>
-            {% endif %}
-        </article>
+        </a>
     {% empty %}
         <p class="empty">✅ Aucune notification pour le moment</p>
     {% endfor %}

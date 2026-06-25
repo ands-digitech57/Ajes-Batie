@@ -1,9 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-
 class Notification(models.Model):
-
     class NotificationType(models.TextChoices):
         JOB = "job", "Offre d'emploi"
         JOURNAL = "journal", "Journal"
@@ -14,41 +12,23 @@ class Notification(models.Model):
         related_name="notifications",
         db_index=True,
     )
-
-    title = models.CharField(
-        max_length=255,
-    )
-
-    message = models.TextField(
-        blank=True,
-    )
-
-    link = models.URLField(
-        blank=True,
-    )
-
+    title = models.CharField(max_length=255)
+    message = models.TextField(blank=True)
+    
+    # Remplacé URLField par CharField pour éviter l'erreur 500 avec get_absolute_url()
+    link = models.CharField(max_length=500, blank=True)
+    
     type = models.CharField(
         max_length=20,
         choices=NotificationType.choices,
     )
-
-    is_read = models.BooleanField(
-        default=False,
-        db_index=True,
-    )
-
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        db_index=True,
-    )
+    is_read = models.BooleanField(default=False, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
         ordering = ["-created_at"]
-
         verbose_name = "Notification"
-
         verbose_name_plural = "Notifications"
-
         indexes = [
             models.Index(fields=["user", "is_read"]),
             models.Index(fields=["created_at"]),

@@ -1,7 +1,6 @@
 ﻿from django.db import models
 from django.urls import reverse
 
-
 class JobOffer(models.Model):
     CONTRACT_CHOICES = [
         ('full_time', 'Temps plein'),
@@ -21,6 +20,11 @@ class JobOffer(models.Model):
     location = models.CharField(max_length=140, blank=True)
     contract_type = models.CharField(max_length=30, choices=CONTRACT_CHOICES, default='mission')
     required_skills = models.TextField(blank=True)
+    
+    # NOUVEAUX CHAMPS MÉDIAS POUR LES OFFRES
+    image_file = models.ImageField(upload_to='job_images/', null=True, blank=True)
+    video_file = models.FileField(upload_to='job_videos/', null=True, blank=True)
+    
     deadline = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

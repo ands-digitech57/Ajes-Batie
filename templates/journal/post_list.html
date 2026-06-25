@@ -141,6 +141,8 @@
         background-color: #0f172a !important;
         position: relative !important;
         overflow: hidden !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
     }
     .media-holder {
         width: 100% !important;
@@ -272,7 +274,7 @@
             
             <div class="post-actions">
                 <a href="{{ post.get_absolute_url }}" class="action-link">💬 Lire la suite</a>
-                <a href="{{ post.get_absolute_url }}#likes" class="action-link">👍 Mentionner J'aime</a>
+                <a href="{% url 'journal:like' post.slug %}" class="action-link">👍 Mentionner J'aime</a>
             </div>
         </article>
     {% empty %}

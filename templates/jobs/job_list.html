@@ -3,56 +3,287 @@
 {% block title %}Offres | Ajes Connect{% endblock %}
 
 {% block content %}
+<style>
+    /* Fond épuré et typographie professionnelle */
+    body {
+        background-color: #f8fafc !important;
+        font-family: 'Segoe UI', system-ui, sans-serif !important;
+    }
+
+    /* En-tête de la page des offres */
+    .page-title {
+        text-align: center !important;
+        padding: 40px 20px 20px 20px !important;
+        max-width: 700px !important;
+        margin: 0 auto !important;
+    }
+    .page-title .eyebrow {
+        color: #10b981 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 6px !important;
+    }
+    .page-title h1 {
+        font-size: 2.2rem !important;
+        color: #0f172a !important;
+        font-weight: 800 !important;
+        margin: 0 0 10px 0 !important;
+        letter-spacing: -0.5px !important;
+    }
+    .page-title p {
+        color: #64748b !important;
+        font-size: 1.05rem !important;
+        margin: 0 !important;
+    }
+
+    /* Bouton Ajouter de l'en-tête */
+    .btn-create-container {
+        margin-top: 16px !important;
+    }
+    .btn-create {
+        display: inline-block !important;
+        background-color: #10b981 !important;
+        color: #ffffff !important;
+        padding: 10px 20px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2) !important;
+        transition: background 0.2s ease, transform 0.2s ease !important;
+    }
+    .btn-create:hover {
+        background-color: #059669 !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Barre de recherche moderne */
+    .search-bar {
+        max-width: 600px !important;
+        margin: 0 auto 32px auto !important;
+        padding: 0 16px !important;
+        display: flex !important;
+        gap: 10px !important;
+        box-sizing: border-box !important;
+    }
+    .search-input {
+        flex-grow: 1 !important;
+        padding: 12px 16px !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        outline: none !important;
+        background: #ffffff !important;
+        transition: border-color 0.2s ease !important;
+    }
+    .search-input:focus {
+        border-color: #10b981 !important;
+    }
+    .btn-search {
+        background-color: #0f172a !important;
+        color: white !important;
+        border: none !important;
+        padding: 0 20px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: background-color 0.2s ease !important;
+    }
+    .btn-search:hover {
+        background-color: #1e293b !important;
+    }
+
+    /* Grille d'offres responsive */
+    .jobs-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+        gap: 24px !important;
+        max-width: 1100px !important;
+        margin: 0 auto !important;
+        padding: 0 16px 60px 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Carte de l'offre style pro */
+    .job-card {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 6px -1px rgba(0,0,0,0.02) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .job-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    /* Zone Média intégrée (Image/Vidéo de l'offre) */
+    .job-media-box {
+        width: 100% !important;
+        height: 160px !important;
+        background-color: #f1f5f9 !important;
+        overflow: hidden !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+    }
+    .job-media-box img, .job-media-box video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+    }
+
+    /* Corps interne de la carte */
+    .job-card-body {
+        padding: 20px !important;
+        flex-grow: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .job-card-body .eyebrow {
+        color: #3b82f6 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        font-size: 0.75rem !important;
+        letter-spacing: 0.5px !important;
+        margin-bottom: 4px !important;
+    }
+    .job-card-title {
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+        margin: 0 0 8px 0 !important;
+        line-height: 1.35 !important;
+    }
+    .job-card-title a {
+        color: #0f172a !important;
+        text-decoration: none !important;
+    }
+    .job-card-title a:hover {
+        color: #10b981 !important;
+    }
+
+    .job-meta-info {
+        font-size: 0.85rem !important;
+        color: #475569 !important;
+        margin-bottom: 12px !important;
+    }
+    .job-desc {
+        color: #64748b !important;
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+        margin: 0 0 20px 0 !important;
+    }
+    .job-deadline {
+        font-size: 0.8rem !important;
+        color: #94a3b8 !important;
+        font-weight: 500 !important;
+        margin-top: auto !important;
+        margin-bottom: 14px !important;
+    }
+
+    /* Boutons d'action */
+    .job-actions-group {
+        display: flex !important;
+        gap: 10px !important;
+    }
+    .btn-action {
+        flex: 1 !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        padding: 10px !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+        transition: background-color 0.2s ease !important;
+    }
+    .btn-action.primary {
+        background-color: #0f172a !important;
+        color: white !important;
+    }
+    .btn-action.primary:hover {
+        background-color: #1e293b !important;
+    }
+    .btn-action.secondary {
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+    }
+    .btn-action.secondary:hover {
+        background-color: #e2e8f0 !important;
+    }
+
+    .empty-state {
+        grid-column: 1 / -1 !important;
+        text-align: center !important;
+        padding: 40px !important;
+        background: white !important;
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #64748b !important;
+        font-weight: 600 !important;
+        font-size: 1.05rem !important;
+    }
+</style>
+
 <section class="page-title">
     <p class="eyebrow">Opportunités</p>
     <h1>Offres d'emploi</h1>
     <p>Découvrez les meilleures opportunités de la communauté</p>
     {% if user.is_authenticated and user.is_staff %}
-        <div style="margin-top: 16px;">
-            <a class="btn" href="{% url 'jobs:create' %}">➕ Publier une offre</a>
+        <div class="btn-create-container">
+            <a class="btn-create" href="{% url 'jobs:create' %}">➕ Publier une offre</a>
         </div>
     {% endif %}
 </section>
 
 <form class="search-bar" method="get">
-    <input type="search" name="q" value="{{ query }}" placeholder="Rechercher par titre, localisation, domaine...">
-    <button class="btn" type="submit">🔍 Rechercher</button>
+    <input class="search-input" type="search" name="q" value="{{ query|default:'' }}" placeholder="Rechercher par titre, localisation, domaine...">
+    <button class="btn-search" type="submit">🔍 Rechercher</button>
 </form>
 
-<section class="list-stack">
+<section class="jobs-grid">
     {% for job in jobs %}
-        <article class="card">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                <div>
-                    <p class="eyebrow">{{ job.get_contract_type_display }}</p>
-                    <h2 style="margin: 4px 0;"><a href="{{ job.get_absolute_url }}">{{ job.title }}</a></h2>
+        <article class="job-card">
+            
+            {% if job.image_file %}
+                <div class="job-media-box">
+                    <img src="{{ job.image_file.url }}" alt="{{ job.title }}">
+                </div>
+            {% elif job.video_file %}
+                <div class="job-media-box">
+                    <video src="{{ job.video_file.url }}" muted autoplay loop playsinline></video>
+                </div>
+            {% endif %}
+            
+            <div class="job-card-body">
+                <p class="eyebrow">💼 {{ job.get_contract_type_display }}</p>
+                <h2 class="job-card-title"><a href="{{ job.get_absolute_url }}">{{ job.title }}</a></h2>
+                
+                <p class="job-meta-info">
+                    🏢 <strong>{{ job.company_name }}</strong> {% if job.location %} • 📍 {{ job.location }}{% endif %}
+                </p>
+                
+                <p class="job-desc">{{ job.description|truncatewords:20 }}</p>
+                
+                <div class="job-deadline">
+                    {% if job.deadline %}
+                        📅 Postuler avant le {{ job.deadline|date:"d/m/Y" }}
+                    {% else %}
+                        📅 Aucune date limite
+                    {% endif %}
                 </div>
                 
-                {% if job.deadline %}
-<span class="muted">
-📅 Avant {{ job.deadline|date:"d/m/Y" }}
-</span>
-{% else %}
-<span class="muted">
-📅 Aucune date limite
-</span>
-{% endif %}
-            </div>
-            
-            <p class="meta">
-                🏢 <strong>{{ job.company_name }}</strong>
-                {% if job.location %} • 📍 {{ job.location }}{% endif %}
-            </p>
-            
-            <p style="margin-bottom: 16px;">{{ job.description|truncatewords:35 }}</p>
-            
-            <div style="display: flex; gap: 8px;">
-                <a class="btn secondary" href="{{ job.get_absolute_url }}">Voir l'offre</a>
-                <a class="btn secondary" href="{% url 'jobs:apply' job.pk %}"> Postuler</a>
+                <div class="job-actions-group">
+                    <a class="btn-action secondary" href="{{ job.get_absolute_url }}">Détails</a>
+                    <a class="btn-action primary" href="{% url 'jobs:apply' job.pk %}">Postuler</a>
+                </div>
             </div>
         </article>
     {% empty %}
-        <p class="empty">💼 Aucune offre active pour le moment. Reviens bientôt!</p>
+        <p class="empty-state">💼 Aucune offre active pour le moment. Reviens bientôt !</p>
     {% endfor %}
 </section>
 {% endblock %}
