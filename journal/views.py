@@ -17,7 +17,6 @@ def post_list(request):
 
 def post_detail(request, slug):
     """Affiche les détails d'une publication et gère les commentaires."""
-    # On autorise l'accès pour éviter les erreurs 404/500 lors de la prévisualisation immédiate
     post = get_object_or_404(JournalPost, slug=slug)
     comments = post.comments.select_related('user')
     
@@ -32,7 +31,8 @@ def post_detail(request, slug):
             comment.user = request.user
             comment.save()
             messages.success(request, 'Votre commentaire a été enregistré avec succès.')
-            return redirect('journal:detail', slug=post.slug)
+            # CORRECTION : Redirection par URL explicite pour éviter les blocages de reverse
+            return redirect(f'/journal/{post.slug}/')
         else:
             messages.error(request, "Impossible d'enregistrer le commentaire. Veuillez vérifier le texte.")
     else:
@@ -59,23 +59,22 @@ def post_create(request):
                 post = form.save(commit=False)
                 post.author = request.user
                 
-                # Génération ultra-robuste d'un slug unique pour l'URL
+                # Génération d'un slug unique pour l'URL
                 base_slug = slugify(post.title)
                 if not base_slug:
                     base_slug = "publication"
                 
                 slug = base_slug
-                # Boucle de sécurité anti-doublon en base de données
                 while JournalPost.objects.filter(slug=slug).exists():
                     slug = f"{base_slug}-{uuid.uuid4().hex[:4]}"
                 
                 post.slug = slug
                 post.save()
                 
-                # Obligatoire lors de l'utilisation de commit=False pour sauvegarder les fichiers/relations
+                # Sauvegarde des relations Many-to-Many et fichiers
                 form.save_m2m()
                 
-                # Système de notification isolé (N'interrompt pas la création si défaillant)
+                # Système de notification isolé
                 try:
                     recipients = User.objects.filter(is_active=True).exclude(pk=request.user.pk)
                     notifications = [
@@ -89,17 +88,17 @@ def post_create(request):
                     ]
                     Notification.objects.bulk_create(notifications)
                 except Exception:
-                    pass # Étouffe l'erreur si le modèle Notification est configuré différemment
+                    pass 
                 
                 messages.success(request, 'Félicitations ! Votre article a été publié avec succès.')
-                return redirect('/journal/') # Redirection par texte brut pour parer les erreurs de reverse
+                return redirect('/journal/')
 
             except IntegrityError as e:
                 messages.error(request, f"Erreur de contrainte de la base de données : {str(e)}")
             except Exception as e:
                 messages.error(request, f"Erreur critique lors de la sauvegarde : {str(e)}")
         else:
-            # Révèle précisément quel champ pose un problème de validation (ex: date invalide, fichier trop lourd...)
+            # Traitement explicite et affichage des erreurs de validation
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"Champ [{field}] : {error}")
