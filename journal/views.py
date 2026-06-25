@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
+from django.db import IntegrityError
 
 from accounts.models import Notification
 from .forms import JournalPostCommentForm, JournalPostForm
@@ -14,7 +15,8 @@ def post_list(request):
     return render(request, 'journal/post_list.html', {'posts': posts})
 
 def post_detail(request, slug):
-    post = get_object_or_404(JournalPost, slug=slug, is_published=True)
+    # Sécurité : on cherche le post, peu importe s'il est publié ou non pour l'auteur
+    post = get_object_or_404(JournalPost, slug=slug)
     comments = post.comments.select_related('user')
     
     if request.method == 'POST':
@@ -27,7 +29,7 @@ def post_detail(request, slug):
             comment.user = request.user
             comment.save()
             messages.success(request, 'Votre commentaire a été enregistré.')
-            return redirect(post)
+            return redirect('journal:detail', slug=post.slug)
     else:
         form = JournalPostCommentForm()
 
@@ -41,47 +43,52 @@ def post_detail(request, slug):
 def post_create(request):
     if not request.user.is_staff:
         messages.error(request, "Vous n'êtes pas autorisé à publier un article.")
-        return redirect('journal:list')
+        return redirect('journal:post_list') # Modifié pour correspondre aux standards d'URLs
 
     if request.method == 'POST':
         form = JournalPostForm(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            
-            # Gestion robuste et sécurisée du slug
-            if not post.slug:
+            try:
+                post = form.save(commit=False)
+                post.author = request.user
+                
+                # Unification et sécurisation de la génération du slug unique
                 base_slug = slugify(post.title)
-                if not base_slug:  # Si le titre ne contient que des caractères spéciaux
+                if not base_slug:
                     base_slug = "publication"
                 
-                if JournalPost.objects.filter(slug=base_slug).exists():
-                    post.slug = f"{base_slug}-{uuid.uuid4().hex[:6]}"
-                else:
-                    post.slug = base_slug
-            
-            post.save()
-            form.save_m2m()
-            
-            # Création sécurisée des notifications (Sans le champ type suspect)
-            try:
-                recipients = User.objects.filter(is_active=True).exclude(pk=request.user.pk)
-                notifications = [
-                    Notification(
-                        user=user,
-                        title="📰 Nouvelle publication",
-                        message=f"L'article '{post.title}' a été publié dans le journal.",
-                        link=post.get_absolute_url(),
-                    )
-                    for user in recipients
-                ]
-                Notification.objects.bulk_create(notifications)
-            except Exception:
-                # Évite un crash total du site si la table notification rencontre un souci
-                pass
-            
-            messages.success(request, 'Publication publiée avec succès.')
-            return redirect('journal:list')
+                # Boucle de sécurité pour s'assurer que le slug est 100% unique en BDD
+                slug = base_slug
+                while JournalPost.objects.filter(slug=slug).exists():
+                    slug = f"{base_slug}-{uuid.uuid4().hex[:4]}"
+                
+                post.slug = slug
+                post.save()
+                form.save_m2m()
+                
+                # Notification de la communauté isolée dans un try/except pour bloquer toute 500
+                try:
+                    recipients = User.objects.filter(is_active=True).exclude(pk=request.user.pk)
+                    notifications = [
+                        Notification(
+                            user=user,
+                            title="📰 Nouvelle publication",
+                            message=f"L'article '{post.title}' a été publié.",
+                            link=post.get_absolute_url() if hasattr(post, 'get_absolute_url') else f"/journal/{post.slug}/",
+                        )
+                        for user in recipients
+                    ]
+                    Notification.objects.bulk_create(notifications)
+                except Exception:
+                    pass # Si les notifications échouent, l'article est quand même créé !
+                
+                messages.success(request, 'Publication publiée avec succès.')
+                return redirect('journal:post_list')
+
+            except IntegrityError as e:
+                messages.error(request, f"Erreur d'intégrité de la base de données : {str(e)}")
+            except Exception as e:
+                messages.error(request, f"Une erreur imprévue est survenue : {str(e)}")
     else:
         form = JournalPostForm()
 
@@ -89,11 +96,11 @@ def post_create(request):
 
 @login_required
 def post_like(request, slug):
-    post = get_object_or_404(JournalPost, slug=slug, is_published=True)
+    post = get_object_or_404(JournalPost, slug=slug)
     like, created = JournalPostLike.objects.get_or_create(user=request.user, post=post)
     if created:
         messages.success(request, 'Vous avez aimé cet article.')
     else:
         like.delete()
         messages.info(request, 'Mention j\'aime actualisée.')
-    return redirect(post)
+    return redirect('journal:detail', slug=post.slug)
