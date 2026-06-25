@@ -5,13 +5,11 @@
 
 {% block content %}
 <style>
-    /* Fond épuré pour une atmosphère professionnelle */
     body {
         background-color: #f8fafc !important;
         font-family: 'Segoe UI', system-ui, sans-serif !important;
     }
     
-    /* En-tête de la page style grand média */
     .journal-hero {
         text-align: center !important;
         padding: 40px 20px 24px 20px !important;
@@ -39,7 +37,6 @@
         margin: 0 !important;
     }
 
-    /* Bouton d'action élégant */
     .actions-bar {
         display: flex !important;
         justify-content: center !important;
@@ -60,46 +57,43 @@
         transform: translateY(-1px) !important;
     }
 
-    /* Flux d'actualités professionnel */
     .feed-container {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        gap: 24px !important;
-        max-width: 620px !important;
+        gap: 28px !important;
+        max-width: 600px !important;
         margin: 0 auto !important;
         padding: 0 16px 60px 16px !important;
     }
 
-    /* Style de la carte de publication pro */
     .post-card {
         background: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01) !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        padding: 20px !important;
-        transition: transform 0.2s ease !important;
+        padding: 24px !important;
+        overflow: hidden !important;
     }
 
-    /* En-tête interne du post */
     .post-header {
         display: flex !important;
         justify-content: space-between !important;
         align-items: flex-start !important;
-        margin-bottom: 14px !important;
+        margin-bottom: 16px !important;
     }
     
-    /* Badges thématiques */
     .category-badge {
         display: inline-block !important;
-        padding: 4px 10px !important;
-        border-radius: 6px !important;
-        font-size: 0.75rem !important;
+        padding: 4px 12px !important;
+        border-radius: 20px !important;
+        font-size: 0.72rem !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
+        letter-spacing: 0.5px !important;
     }
     .badge-activity { background: #e0f2fe !important; color: #0369a1 !important; }
     .badge-event { background: #fef3c7 !important; color: #b45309 !important; }
@@ -113,9 +107,9 @@
     .post-header h2 a {
         color: #0f172a !important;
         text-decoration: none !important;
-        font-size: 1.25rem !important;
+        font-size: 1.35rem !important;
         font-weight: 700 !important;
-        line-height: 1.35 !important;
+        line-height: 1.4 !important;
     }
     .post-header h2 a:hover {
         color: #10b981 !important;
@@ -127,55 +121,63 @@
         white-space: nowrap !important;
     }
 
-    /* Texte de la publication */
     .post-content {
         font-size: 0.98rem !important;
         color: #334155 !important;
         line-height: 1.6 !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 20px !important;
     }
 
-    /* ZONE MÉDIA CORRIGÉE ET INTELLIGENTE */
+    /* ZONE MEDIAS - AJUSTEMENT PREMIUM STYLÉ */
     .post-media-wrapper {
-        margin: 12px -20px 16px -20px !important;
-        background-color: #0f172a !important;
-        border-top: 1px solid #e2e8f0 !important;
-        border-bottom: 1px solid #e2e8f0 !important;
+        margin: 16px -24px 20px -24px !important;
+        background-color: #f8fafc !important;
+        border-top: 1px solid #f1f5f9 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
         overflow: hidden !important;
     }
+    
     .media-holder {
         width: 100% !important;
-        background-color: #0f172a !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        background: #0f172a !important;
     }
+    
     .media-holder img {
         width: 100% !important;
         height: auto !important;
-        max-height: 500px !important;
+        max-height: 450px !important;
         object-fit: cover !important;
         display: block !important;
     }
+    
     .media-holder video {
         width: 100% !important;
-        max-height: 500px !important;
+        max-height: 450px !important;
         display: block !important;
         outline: none !important;
         background: #000000 !important;
     }
 
-    /* Mosaïque pour les éléments supplémentaires */
+    /* GRILLE MOSAÏQUE ÉLÉGANTE POUR ÉLÉMENTS SECONDAIRES */
     .media-gallery-grid {
         display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
-        gap: 4px !important;
-        background: #e2e8f0 !important;
-        border-top: 4px solid #ffffff !important;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+        gap: 3px !important;
+        background: #ffffff !important;
+        padding-top: 3px !important;
     }
+    
     .gallery-item-wrapper {
-        position: relative !important;
-        background-color: #0f172a !important;
         height: 120px !important;
         overflow: hidden !important;
+        background: #f1f5f9 !important;
+        position: relative !important;
+        border-radius: 4px !important;
     }
+    
     .gallery-item-wrapper img, 
     .gallery-item-wrapper video {
         width: 100% !important;
@@ -184,7 +186,6 @@
         display: block !important;
     }
 
-    /* Pied de la carte : Interactions */
     .post-footer-meta {
         display: flex !important;
         justify-content: space-between !important;
@@ -192,7 +193,7 @@
         color: #64748b !important;
         border-bottom: 1px solid #f1f5f9 !important;
         padding-bottom: 12px !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 12px !important;
         font-weight: 500 !important;
     }
     .post-actions {
@@ -205,11 +206,11 @@
         font-weight: 600 !important;
         font-size: 0.9rem !important;
         padding: 8px 16px !important;
-        border-radius: 6px !important;
+        border-radius: 8px !important;
         display: flex !important;
         align-items: center !important;
         gap: 6px !important;
-        transition: background 0.2s ease !important;
+        transition: all 0.2s ease !important;
     }
     .action-link:hover {
         background-color: #f1f5f9 !important;
@@ -246,18 +247,20 @@
                 <p>{{ post.summary|default:post.content|truncatewords:45 }}</p>
             </div>
             
-            {% if post.image_file or post.image_url or post.video_file or post.media_items.all %}
+            {% if post.video_file or post.image_file or post.image_url or post.media_items.all %}
                 <div class="post-media-wrapper">
                     
-                    {% if post.video_file or post.image_file or post.image_url %}
+                    {% if post.video_file %}
                         <div class="media-holder">
-                            {% if post.video_file %}
-                                <video controls playsinline preload="metadata" src="{{ post.video_file.url }}"></video>
-                            {% elif post.image_file %}
-                                <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
-                            {% elif post.image_url %}
-                                <img src="{{ post.image_url }}" alt="{{ post.title }}">
-                            {% endif %}
+                            <video controls playsinline preload="metadata" src="{{ post.video_file.url }}"></video>
+                        </div>
+                    {% elif post.image_file %}
+                        <div class="media-holder">
+                            <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+                        </div>
+                    {% elif post.image_url %}
+                        <div class="media-holder">
+                            <img src="{{ post.image_url }}" alt="{{ post.title }}">
                         </div>
                     {% endif %}
 
@@ -267,7 +270,7 @@
                                 {% if item.file or item.external_url %}
                                     <div class="gallery-item-wrapper">
                                         {% if item.media_type == 'image' %}
-                                            <img src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}" alt="Média additionnel">
+                                            <img src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}" alt="Galerie">
                                         {% elif item.media_type == 'video' %}
                                             <video controls playsinline preload="metadata" src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}"></video>
                                         {% endif %}
