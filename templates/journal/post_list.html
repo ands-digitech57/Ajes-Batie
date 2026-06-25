@@ -128,7 +128,7 @@
         margin-bottom: 20px !important;
     }
 
-    /* ZONE MEDIAS - AJUSTEMENT PREMIUM STYLÉ */
+    /* ZONE MEDIAS - PREMIUM ET SÉCURISÉ */
     .post-media-wrapper {
         margin: 16px -24px 20px -24px !important;
         background-color: #f8fafc !important;
@@ -161,7 +161,6 @@
         background: #000000 !important;
     }
 
-    /* GRILLE MOSAÏQUE ÉLÉGANTE POUR ÉLÉMENTS SECONDAIRES */
     .media-gallery-grid {
         display: grid !important;
         grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
@@ -226,7 +225,7 @@
 
 {% if user.is_staff %}
 <section class="actions-bar">
-    <a class="btn-publish" href="{% url 'journal:post_create' %}">✍️ Rédiger un article</a>
+    <a class="btn-publish" href="/journal/creer/">✍️ Rédiger un article</a>
 </section>
 {% endif %}
 
@@ -238,7 +237,7 @@
                     <span class="category-badge badge-{{ post.category }}">
                         {{ post.get_category_display }}
                     </span>
-                    <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+                    <h2><a href="/journal/{{ post.slug }}/">{{ post.title }}</a></h2>
                 </div>
                 <span class="post-date">{{ post.created_at|date:'d M Y' }}</span>
             </header>
@@ -284,13 +283,13 @@
             {% endif %}            
             
             <div class="post-footer-meta">
-                <span>❤️ {{ post.likes_count }} mention{% if post.likes_count != 1 %}s{% endif %} J'aime</span>
+                <span>❤️ {{ post.likes.all|length|default:"0" }} mention{% if post.likes.all|length != 1 %}s{% endif %} J'aime</span>
                 {% if post.event_date %}<span>📅 Événement le : {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
             </div>
             
             <div class="post-actions">
-                <a href="{{ post.get_absolute_url }}" class="action-link">💬 Lire la suite</a>
-                <a href="{% url 'journal:post_like' post.slug %}" class="action-link">👍 Mentionner J'aime</a>
+                <a href="/journal/{{ post.slug }}/" class="action-link">💬 Lire la suite</a>
+                <a href="/journal/{{ post.slug }}/like/" class="action-link">👍 Mentionner J'aime</a>
             </div>
         </article>
     {% empty %}
