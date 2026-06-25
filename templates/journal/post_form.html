@@ -6,28 +6,32 @@
 <style>
     body {
         background-color: #f8fafc !important;
+        font-family: 'Segoe UI', system-ui, sans-serif !important;
     }
     .form-container {
-        max-width: 650px;
-        margin: 40px auto;
+        max-width: 600px;
+        margin: 50px auto;
         background: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
+        padding: 35px;
+        border-radius: 16px;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
     }
     .form-header {
-        margin-bottom: 24px;
+        margin-bottom: 28px;
+        text-align: center;
     }
     .form-header h1 {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         color: #0f172a;
-        font-weight: 700;
-        margin: 0 0 4px 0;
+        font-weight: 800;
+        margin: 6px 0 4px 0;
+        letter-spacing: -0.5px;
     }
     .form-header p {
         color: #64748b;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         margin: 0;
     }
     
@@ -36,7 +40,7 @@
         display: flex;
         flex-direction: column;
         gap: 6px;
-        margin-bottom: 18px;
+        margin-bottom: 20px;
     }
     .form-group label {
         font-size: 0.9rem;
@@ -44,65 +48,83 @@
         color: #334155;
     }
     
-    /* Input design moderne */
-    .form-group input[type="text"],
-    .form-group input[type="date"],
+    /* Input design moderne hérité du formulaire Django */
+    .form-group input,
     .form-group select,
     .form-group textarea {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        color: #0f172a;
-        box-sizing: border-box;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        width: 100% !important;
+        padding: 10px 14px !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        color: #0f172a !important;
+        box-sizing: border-box !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
+        background-color: #ffffff !important;
     }
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
-        outline: none;
-        border-color: #10b981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        outline: none !important;
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
     }
     
-    /* Personnalisation des boutons de fichiers */
+    /* Ajustement spécifique pour le type file */
     .form-group input[type="file"] {
-        padding: 6px 0;
-        font-size: 0.9rem;
+        padding: 8px !important;
+        background: #f8fafc !important;
+        border: 1px dashed #cbd5e1 !important;
+        cursor: pointer;
     }
 
-    /* Checkbox alignement */
+    /* Checkbox alignement moderne */
     .form-group-checkbox {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 20px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin: 15px 0 25px 0 !important;
+        padding: 10px 14px !important;
+        background: #f8fafc !important;
+        border-radius: 8px !important;
+        border: 1px solid #e2e8f0 !important;
     }
-    .form-group-checkbox input {
-        width: 16px;
-        height: 16px;
-        accent-color: #10b981;
+    .form-group-checkbox input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+        accent-color: #10b981 !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+    }
+    .form-group-checkbox label {
+        font-size: 0.92rem !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        cursor: pointer !important;
     }
 
     /* Actions */
     .form-actions {
-        margin-top: 28px;
+        margin-top: 30px;
     }
     .btn-submit {
         width: 100%;
         background-color: #10b981;
         color: white;
         border: none;
-        padding: 12px;
+        padding: 14px;
         font-size: 1rem;
         font-weight: 600;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
-        transition: background 0.2s;
+        transition: background 0.2s, transform 0.1s;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
     }
     .btn-submit:hover {
         background-color: #059669;
+    }
+    .btn-submit:active {
+        transform: scale(0.99);
     }
 </style>
 
@@ -114,13 +136,16 @@
     </div>
 
     <form method="post" enctype="multipart/form-data">
-        {% csrf_block %}
         {% csrf_token %}
         
         {% if form.errors %}
-            <div style="background-color: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem;">
+            <div style="background-color: #fee2e2; color: #b91c1c; padding: 14px; border-radius: 8px; margin-bottom: 22px; font-size: 0.9rem; border: 1px solid #fca5a5;">
                 <strong>Veuillez corriger les erreurs suivantes :</strong>
-                {{ form.errors }}
+                <ul style="margin: 6px 0 0 18px; padding: 0;">
+                    {% for field, errors in form.errors.items %}
+                        <li>{{ field }}: {{ errors|striptags }}</li>
+                    {% endfor %}
+                </ul>
             </div>
         {% endif %}
 
@@ -135,7 +160,7 @@
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {{ field }}
                     {% if field.help_text %}
-                        <small style="color: #64748b; font-size: 0.8rem;">{{ field.help_text }}</small>
+                        <small style="color: #64748b; font-size: 0.8rem; margin-top: 2px;">{{ field.help_text }}</small>
                     {% endif %}
                 </div>
             {% endif %}
