@@ -10,22 +10,24 @@ class JournalPostForm(forms.ModelForm):
             'content',
             'category',
             'event_date',
+            'image_file',
+            'video_file',
             'is_published',
         ]
         widgets = {
             'summary': forms.Textarea(attrs={
                 'rows': 3, 
                 'placeholder': 'Un court résumé de la publication...',
-                'style': 'width: 100%; border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0;'
+                'style': 'width: 100%; border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0; font-family: inherit;'
             }),
             'content': forms.Textarea(attrs={
                 'rows': 6, 
                 'placeholder': 'Contenu détaillé de votre article...',
-                'style': 'width: 100%; border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0;'
+                'style': 'width: 100%; border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0; font-family: inherit;'
             }),
             'event_date': forms.DateInput(attrs={
                 'type': 'date',
-                'style': 'border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0;'
+                'style': 'width: 100%; border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0;'
             }),
             'category': forms.Select(attrs={
                 'style': 'width: 100%; border-radius: 8px; padding: 10px; border: 1px solid #e2e8f0; background: white;'
@@ -37,6 +39,8 @@ class JournalPostForm(forms.ModelForm):
             'content': 'Contenu de l\'article',
             'category': 'Catégorie',
             'event_date': 'Date de l\'événement (Optionnel)',
+            'image_file': 'Illustration image (Optionnel)',
+            'video_file': 'Capsule vidéo (Optionnel)',
             'is_published': 'Publier immédiatement',
         }
 
