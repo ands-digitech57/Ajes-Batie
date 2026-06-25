@@ -66,7 +66,7 @@
         flex-direction: column !important;
         align-items: center !important;
         gap: 24px !important;
-        max-width: 650px !important;
+        max-width: 620px !important;
         margin: 0 auto !important;
         padding: 0 16px 60px 16px !important;
     }
@@ -135,47 +135,56 @@
         margin-bottom: 16px !important;
     }
 
-    /* ZONE MÉDIA UNIQUE ET RESPONSIVE */
+    /* ZONE MÉDIA CORRIGÉE ET INTELLIGENTE */
     .post-media-wrapper {
         margin: 12px -20px 16px -20px !important;
         background-color: #0f172a !important;
-        position: relative !important;
-        overflow: hidden !important;
         border-top: 1px solid #e2e8f0 !important;
         border-bottom: 1px solid #e2e8f0 !important;
+        overflow: hidden !important;
     }
     .media-holder {
         width: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
+        background-color: #0f172a !important;
     }
     .media-holder img {
         width: 100% !important;
         height: auto !important;
-        max-height: 450px !important;
+        max-height: 500px !important;
         object-fit: cover !important;
         display: block !important;
     }
     .media-holder video {
         width: 100% !important;
-        max-height: 450px !important;
+        max-height: 500px !important;
         display: block !important;
         outline: none !important;
         background: #000000 !important;
     }
 
-    /* Carrousel/Grille si multi-médias additionnels */
+    /* Mosaïque pour les éléments supplémentaires */
     .media-gallery-grid {
         display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
-        gap: 2px !important;
-        background: #0f172a !important;
-        border-top: 2px solid #0f172a !important;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+        gap: 4px !important;
+        background: #e2e8f0 !important;
+        border-top: 4px solid #ffffff !important;
+    }
+    .gallery-item-wrapper {
+        position: relative !important;
+        background-color: #0f172a !important;
+        height: 120px !important;
+        overflow: hidden !important;
+    }
+    .gallery-item-wrapper img, 
+    .gallery-item-wrapper video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
     }
 
-    /* Pied de la carte : Métadonnées & Interaction */
+    /* Pied de la carte : Interactions */
     .post-footer-meta {
         display: flex !important;
         justify-content: space-between !important;
@@ -216,7 +225,7 @@
 
 {% if user.is_staff %}
 <section class="actions-bar">
-    <a class="btn-publish" href="{% url 'journal:create' %}">✍️ Rédiger un article</a>
+    <a class="btn-publish" href="{% url 'journal:post_create' %}">✍️ Rédiger un article</a>
 </section>
 {% endif %}
 
@@ -237,29 +246,33 @@
                 <p>{{ post.summary|default:post.content|truncatewords:45 }}</p>
             </div>
             
-            {% if post.image_file or post.image_url or post.video_file or post.media_items.exists %}
+            {% if post.image_file or post.image_url or post.video_file or post.media_items.all %}
                 <div class="post-media-wrapper">
                     
-                    <div class="media-holder">
-                        {% if post.video_file %}
-                            <video controls playsinline preload="metadata" src="{{ post.video_file.url }}"></video>
-                        {% elif post.image_file %}
-                            <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
-                        {% elif post.image_url %}
-                            <img src="{{ post.image_url }}" alt="{{ post.title }}">
-                        {% endif %}
-                    </div>
+                    {% if post.video_file or post.image_file or post.image_url %}
+                        <div class="media-holder">
+                            {% if post.video_file %}
+                                <video controls playsinline preload="metadata" src="{{ post.video_file.url }}"></video>
+                            {% elif post.image_file %}
+                                <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+                            {% elif post.image_url %}
+                                <img src="{{ post.image_url }}" alt="{{ post.title }}">
+                            {% endif %}
+                        </div>
+                    {% endif %}
 
-                    {% if post.media_items.exists %}
+                    {% if post.media_items.all %}
                         <div class="media-gallery-grid">
                             {% for item in post.media_items.all %}
-                                <div class="media-holder">
-                                    {% if item.media_type == 'image' %}
-                                        <img src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}" alt="{{ post.title }}">
-                                    {% elif item.media_type == 'video' %}
-                                        <video controls playsinline preload="metadata" src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}"></video>
-                                    {% endif %}
-                                </div>
+                                {% if item.file or item.external_url %}
+                                    <div class="gallery-item-wrapper">
+                                        {% if item.media_type == 'image' %}
+                                            <img src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}" alt="Média additionnel">
+                                        {% elif item.media_type == 'video' %}
+                                            <video controls playsinline preload="metadata" src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}"></video>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     {% endif %}
@@ -274,7 +287,7 @@
             
             <div class="post-actions">
                 <a href="{{ post.get_absolute_url }}" class="action-link">💬 Lire la suite</a>
-                <a href="{% url 'journal:like' post.slug %}" class="action-link">👍 Mentionner J'aime</a>
+                <a href="{% url 'journal:post_like' post.slug %}" class="action-link">👍 Mentionner J'aime</a>
             </div>
         </article>
     {% empty %}
