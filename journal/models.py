@@ -32,7 +32,7 @@ class JournalPost(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('journal:detail', kwargs={'slug': self.slug})
+        return reverse('journal:post_detail', kwargs={'slug': self.slug})
 
     @property
     def likes_count(self):
