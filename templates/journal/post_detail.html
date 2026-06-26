@@ -3,74 +3,263 @@
 {% block title %}{{ post.title }} | Ajes Connect{% endblock %}
 
 {% block content %}
-<article class="post-detail">
-    <header class="post-detail-header">
-        <div>
-            <p class="eyebrow">{{ post.get_category_display }}</p>
+<style>
+    body {
+        background-color: #f8fafc !important;
+        font-family: 'Segoe UI', system-ui, sans-serif !important;
+    }
+    .post-detail-container {
+        max-width: 750px;
+        margin: 40px auto;
+        padding: 0 16px 80px 16px;
+    }
+    .post-detail-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        padding: 35px;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+    }
+    .post-detail-header {
+        margin-bottom: 24px;
+    }
+    .eyebrow-detail {
+        color: #10b981;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    .post-detail-card h1 {
+        font-size: 2.2rem;
+        color: #0f172a;
+        font-weight: 800;
+        line-height: 1.25;
+        margin: 0 0 14px 0;
+        letter-spacing: -0.5px;
+    }
+    .meta-author-zone {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 16px;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+    
+    .detail-media-box {
+        margin: 24px 0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #0f172a;
+    }
+    .detail-media-box img, .detail-media-box video {
+        width: 100%;
+        display: block;
+        max-height: 480px;
+        object-fit: cover;
+    }
+    
+    .lead-text {
+        font-size: 1.15rem;
+        color: #334155;
+        line-height: 1.6;
+        font-weight: 600;
+        border-left: 4px solid #10b981;
+        padding-left: 16px;
+        margin: 24px 0;
+    }
+    .article-body {
+        font-size: 1.05rem;
+        color: #334155;
+        line-height: 1.75;
+    }
+    
+    /* ACTIONS ZONE */
+    .interaction-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 35px;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+    }
+    .btn-like-submit {
+        background-color: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        padding: 10px 20px;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+    .btn-like-submit:hover {
+        background-color: #fee2e2;
+        color: #ef4444;
+        border-color: #fca5a5;
+    }
+
+    /* COMMENTS DESIGN */
+    .comments-wrapper {
+        margin-top: 40px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        padding: 35px;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+    }
+    .comments-wrapper h2 {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 24px 0;
+    }
+    .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 30px;
+    }
+    .comment-card {
+        background: #f8fafc;
+        border-radius: 14px;
+        padding: 16px 20px;
+        border: 1px solid #f1f5f9;
+    }
+    .comment-user-info {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .comment-date {
+        color: #94a3b8;
+        font-weight: 500;
+        font-size: 0.8rem;
+    }
+    .comment-card p {
+        margin: 0;
+        color: #475569;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .comment-input-form textarea {
+        width: 100% !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 12px !important;
+        padding: 14px !important;
+        box-sizing: border-box;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: border-color 0.2s;
+    }
+    .comment-input-form textarea:focus {
+        outline: none;
+        border-color: #10b981 !important;
+    }
+    .btn-comment-submit {
+        background: #0f172a;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 12px;
+        transition: background 0.2s;
+    }
+    .btn-comment-submit:hover {
+        background: #10b981;
+    }
+</style>
+
+<div class="post-detail-container">
+    <article class="post-detail-card">
+        <header class="post-detail-header">
+            <p class="eyebrow-detail">{{ post.get_category_display }}</p>
             <h1>{{ post.title }}</h1>
-            {% if post.author %}
-                <p class="muted">Publié par {{ post.author.get_full_name|default:post.author.username }}</p>
+            
+            <div class="meta-author-zone">
+                <span>✍️ Par <strong>{{ post.author.get_full_name|default:post.author.username|default:"L'administration" }}</strong></span>
+                <span>📅 {{ post.created_at|date:'d M Y' }}</span>
+            </div>
+        </header>
+
+        {% if post.image_file %}
+            <div class="detail-media-box">
+                <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+            </div>
+        {% elif post.image_url %}
+            <div class="detail-media-box">
+                <img src="{{ post.image_url }}" alt="{{ post.title }}">
+            </div>
+        {% endif %}
+
+        {% if post.video_file %}
+            <div class="detail-media-box">
+                <video controls src="{{ post.video_file.url }}"></video>
+            </div>
+        {% endif %}
+
+        {% if post.summary %}
+            <p class="lead-text">{{ post.summary }}</p>
+        {% endif %}
+
+        <div class="article-body">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <div class="interaction-bar">
+            <span>❤️ <strong>{{ post.likes_count }}</strong> personne{% if post.likes_count != 1 %}s aiment{% else %} aime{% endif %} cet article</span>
+            
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'journal:post_like' post.slug %}">
+                    {% csrf_token %}
+                    <button class="btn-like-submit" type="submit">👍 J'aime</button>
+                </form>
             {% else %}
-                <p class="muted">Publié par l'administration</p>
+                <a class="btn-like-submit" style="text-decoration: none;" href="{% url 'accounts:login' %}?next={{ request.path }}">👍 J'aime</a>
             {% endif %}
         </div>
-        <span class="muted">{{ post.created_at|date:'d M Y' }}</span>
-    </header>
+    </article>
 
-    {% if post.image_file %}
-        <div class="post-media post-detail-media">
-            <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
+    <section class="comments-wrapper">
+        <h2>💬 Réponses et commentaires ({{ comments|length }})</h2>
+        
+        <div class="comment-list">
+            {% for comment in comments %}
+                <article class="comment-card">
+                    <div class="comment-user-info">
+                        <span>{{ comment.user.get_full_name|default:comment.user.username }}</span>
+                        <span class="comment-date">{{ comment.created_at|date:'d M Y à H:i' }}</span>
+                    </div>
+                    <p>{{ comment.content|linebreaksbr }}</p>
+                </article>
+            {% empty %}
+                <p style="color: #64748b; text-align: center; padding: 10px 0; margin: 0;" class="empty">Soyez le premier à ajouter un commentaire réfléchi.</p>
+            {% endfor %}
         </div>
-    {% elif post.image_url %}
-        <div class="post-media post-detail-media">
-            <img src="{{ post.image_url }}" alt="{{ post.title }}">
-        </div>
-    {% endif %}
-
-    {% if post.video_file %}
-        <div class="post-media post-detail-media video-media">
-            <video controls src="{{ post.video_file.url }}"></video>
-        </div>
-    {% endif %}
-
-    {% if post.summary %}
-        <p class="lead">{{ post.summary }}</p>
-    {% endif %}
-
-    <div class="article-content">{{ post.content|linebreaks }}</div>
-
-    <div class="post-actions">
-        {% if user.is_authenticated %}
-            <form method="post" action="{% url 'journal:like' post.slug %}">
-                {% csrf_token %}
-                <button class="btn secondary" type="submit">J'aime</button>
-            </form>
-        {% else %}
-            <a class="btn secondary" href="{% url 'accounts:login' %}?next={{ request.path }}">J'aime</a>
-        {% endif %}
-        <span class="muted">{{ post.likes_count }} like{% if post.likes_count != 1 %}s{% endif %}</span>
-    </div>
-
-    <section class="comments-section">
-        <h2>Commentaires</h2>
-        {% for comment in comments %}
-            <article class="comment-card">
-                <p><strong>{{ comment.user.get_full_name|default:comment.user.username }}</strong> <span class="muted">{{ comment.created_at|date:'d M Y H:i' }}</span></p>
-                <p>{{ comment.content|linebreaks }}</p>
-            </article>
-        {% empty %}
-            <p class="empty">Aucun commentaire pour le moment.</p>
-        {% endfor %}
 
         {% if user.is_authenticated %}
-            <form method="post" class="comment-form">
+            <form method="post" class="comment-input-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button class="btn" type="submit">Publier un commentaire</button>
+                <button class="btn-comment-submit" type="submit">Envoyer le commentaire</button>
             </form>
         {% else %}
-            <a class="btn" href="{% url 'accounts:login' %}?next={{ request.path }}">Connectez-vous pour commenter</a>
+            <div style="text-align: center; padding: 14px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                <a style="color: #10b981; font-weight: 600; text-decoration: none;" href="{% url 'accounts:login' %}?next={{ request.path }}">👉 Connectez-vous à votre compte pour laisser un commentaire</a>
+            </div>
         {% endif %}
     </section>
-</article>
+</div>
 {% endblock %}

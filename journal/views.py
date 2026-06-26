@@ -11,9 +11,8 @@ from .forms import JournalPostCommentForm, JournalPostForm
 from .models import JournalPost, JournalPostComment, JournalPostLike
 
 def post_list(request):
-    """Affiche la liste de toutes les publications de manière brute et sécurisée."""
-    # On prend tous les posts publiés sans filtre complexe pour éliminer l'erreur 500
-    posts = JournalPost.objects.filter(is_published=True)
+    """Affiche la liste de toutes les publications avec leurs médias liés de manière sécurisée."""
+    posts = JournalPost.objects.filter(is_published=True).prefetch_related('media_items')
     return render(request, 'journal/post_list.html', {'posts': posts})
 
 def post_detail(request, slug):

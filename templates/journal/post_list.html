@@ -12,7 +12,7 @@
     
     .journal-hero {
         text-align: center !important;
-        padding: 40px 20px 24px 20px !important;
+        padding: 50px 20px 30px 20px !important;
         max-width: 700px !important;
         margin: 0 auto !important;
     }
@@ -25,7 +25,7 @@
         margin-bottom: 8px !important;
     }
     .journal-hero h1 {
-        font-size: 2.2rem !important;
+        font-size: 2.5rem !important;
         color: #0f172a !important;
         font-weight: 800 !important;
         margin: 0 0 12px 0 !important;
@@ -33,36 +33,38 @@
     }
     .journal-hero p {
         color: #64748b !important;
-        font-size: 1.05rem !important;
+        font-size: 1.1rem !important;
         margin: 0 !important;
+        line-height: 1.5;
     }
 
     .actions-bar {
         display: flex !important;
         justify-content: center !important;
-        margin-bottom: 32px !important;
+        margin-bottom: 40px !important;
     }
     .btn-publish {
         background-color: #10b981 !important;
         color: #ffffff !important;
-        padding: 10px 24px !important;
-        border-radius: 8px !important;
+        padding: 12px 28px !important;
+        border-radius: 10px !important;
         font-weight: 600 !important;
         text-decoration: none !important;
-        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2) !important;
-        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;
+        transition: all 0.25s ease !important;
     }
     .btn-publish:hover {
         background-color: #059669 !important;
-        transform: translateY(-1px) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3) !important;
     }
 
     .feed-container {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
-        gap: 28px !important;
-        max-width: 600px !important;
+        gap: 32px !important;
+        max-width: 650px !important;
         margin: 0 auto !important;
         padding: 0 16px 60px 16px !important;
     }
@@ -70,29 +72,34 @@
     .post-card {
         background: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01) !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04) !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        padding: 24px !important;
-        overflow: hidden !important;
+        padding: 28px !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .post-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 12px 35px -8px rgba(0, 0, 0, 0.07) !important;
     }
 
     .post-header {
         display: flex !important;
         justify-content: space-between !important;
         align-items: flex-start !important;
-        margin-bottom: 16px !important;
+        gap: 16px;
+        margin-bottom: 18px !important;
     }
     
     .category-badge {
         display: inline-block !important;
-        padding: 4px 12px !important;
-        border-radius: 20px !important;
-        font-size: 0.72rem !important;
+        padding: 5px 14px !important;
+        border-radius: 30px !important;
+        font-size: 0.75rem !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 10px !important;
         letter-spacing: 0.5px !important;
     }
     .badge-activity { background: #e0f2fe !important; color: #0369a1 !important; }
@@ -107,9 +114,9 @@
     .post-header h2 a {
         color: #0f172a !important;
         text-decoration: none !important;
-        font-size: 1.35rem !important;
+        font-size: 1.45rem !important;
         font-weight: 700 !important;
-        line-height: 1.4 !important;
+        line-height: 1.35 !important;
     }
     .post-header h2 a:hover {
         color: #10b981 !important;
@@ -119,19 +126,20 @@
         font-size: 0.85rem !important;
         font-weight: 500 !important;
         white-space: nowrap !important;
+        padding-top: 6px;
     }
 
     .post-content {
-        font-size: 0.98rem !important;
+        font-size: 1rem !important;
         color: #334155 !important;
         line-height: 1.6 !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 22px !important;
     }
 
-    /* ZONE MEDIAS - PREMIUM ET SÉCURISÉ */
+    /* ZONE MÉDIAS UNIFIÉE */
     .post-media-wrapper {
-        margin: 16px -24px 20px -24px !important;
-        background-color: #f8fafc !important;
+        margin: 20px -28px 24px -28px !important;
+        background-color: #0f172a !important;
         border-top: 1px solid #f1f5f9 !important;
         border-bottom: 1px solid #f1f5f9 !important;
         overflow: hidden !important;
@@ -142,39 +150,36 @@
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        background: #0f172a !important;
     }
     
     .media-holder img {
         width: 100% !important;
         height: auto !important;
-        max-height: 450px !important;
+        max-height: 420px !important;
         object-fit: cover !important;
         display: block !important;
     }
     
     .media-holder video {
         width: 100% !important;
-        max-height: 450px !important;
+        max-height: 420px !important;
         display: block !important;
         outline: none !important;
-        background: #000000 !important;
     }
 
+    /* MINI MOSAÏQUE POUR ALBUM SECONDAIRE */
     .media-gallery-grid {
         display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
-        gap: 3px !important;
-        background: #ffffff !important;
-        padding-top: 3px !important;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)) !important;
+        gap: 2px !important;
+        background: #0f172a !important;
+        border-top: 2px solid #ffffff !important;
     }
     
     .gallery-item-wrapper {
-        height: 120px !important;
+        height: 100px !important;
         overflow: hidden !important;
-        background: #f1f5f9 !important;
         position: relative !important;
-        border-radius: 4px !important;
     }
     
     .gallery-item-wrapper img, 
@@ -183,6 +188,11 @@
         height: 100% !important;
         object-fit: cover !important;
         display: block !important;
+        opacity: 0.9;
+        transition: opacity 0.2s;
+    }
+    .gallery-item-wrapper:hover img {
+        opacity: 1;
     }
 
     .post-footer-meta {
@@ -191,41 +201,48 @@
         font-size: 0.85rem !important;
         color: #64748b !important;
         border-bottom: 1px solid #f1f5f9 !important;
-        padding-bottom: 12px !important;
-        margin-bottom: 12px !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 16px !important;
         font-weight: 500 !important;
     }
+    
     .post-actions {
         display: flex !important;
         justify-content: space-between !important;
+        gap: 12px;
     }
     .action-link {
         color: #475569 !important;
         text-decoration: none !important;
         font-weight: 600 !important;
         font-size: 0.9rem !important;
-        padding: 8px 16px !important;
-        border-radius: 8px !important;
+        padding: 10px 18px !important;
+        border-radius: 10px !important;
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 8px !important;
+        background-color: #f8fafc !important;
         transition: all 0.2s ease !important;
+        border: 1px solid #f1f5f9;
+        justify-content: center;
+        flex: 1;
     }
     .action-link:hover {
         background-color: #f1f5f9 !important;
         color: #10b981 !important;
+        border-color: #e2e8f0;
     }
 </style>
 
 <section class="journal-hero">
     <p class="eyebrow">Communauté</p>
     <h1>Journal d'actualités</h1>
-    <p class="sub-text">Découvrez les dernières activités, projets et annonces marquantes de la communauté AJES.</p>
+    <p>Découvrez les dernières activités, projets majeurs et annonces marquantes de la communauté AJES.</p>
 </section>
 
 {% if user.is_staff %}
 <section class="actions-bar">
-    <a class="btn-publish" href="/journal/creer/">✍️ Rédiger un article</a>
+    <a class="btn-publish" href="{% url 'journal:post_create' %}">✍️ Rédiger un article</a>
 </section>
 {% endif %}
 
@@ -237,7 +254,7 @@
                     <span class="category-badge badge-{{ post.category }}">
                         {{ post.get_category_display }}
                     </span>
-                    <h2><a href="/journal/{{ post.slug }}/">{{ post.title }}</a></h2>
+                    <h2><a href="{% url 'journal:post_detail' post.slug %}">{{ post.title }}</a></h2>
                 </div>
                 <span class="post-date">{{ post.created_at|date:'d M Y' }}</span>
             </header>
@@ -248,7 +265,6 @@
             
             {% if post.video_file or post.image_file or post.image_url or post.media_items.all %}
                 <div class="post-media-wrapper">
-                    
                     {% if post.video_file %}
                         <div class="media-holder">
                             <video controls playsinline preload="metadata" src="{{ post.video_file.url }}"></video>
@@ -278,22 +294,21 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-
                 </div>
             {% endif %}            
             
             <div class="post-footer-meta">
                 <span>❤️ {{ post.likes.all|length|default:"0" }} mention{% if post.likes.all|length != 1 %}s{% endif %} J'aime</span>
-                {% if post.event_date %}<span>📅 Événement le : {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
+                {% if post.event_date %}<span>📅 Événement : {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
             </div>
             
             <div class="post-actions">
-                <a href="/journal/{{ post.slug }}/" class="action-link">💬 Lire la suite</a>
-                <a href="/journal/{{ post.slug }}/like/" class="action-link">👍 Mentionner J'aime</a>
+                <a href="{% url 'journal:post_detail' post.slug %}" class="action-link">💬 Lire la suite</a>
+                <a href="{% url 'journal:post_like' post.slug %}" class="action-link">👍 Liker</a>
             </div>
         </article>
     {% empty %}
-        <div style="text-align: center; padding: 40px; background: white; border-radius: 12px; border: 1px solid #e2e8f0; width: 100%; box-sizing: border-box;">
+        <div style="text-align: center; padding: 50px 24px; background: white; border-radius: 20px; border: 1px solid #e2e8f0; width: 100%; box-sizing: border-box;">
             <p style="color: #64748b; font-weight: 600; font-size: 1.1rem; margin: 0;">📰 Aucun article n'a été publié pour le moment.</p>
         </div>
     {% endfor %}
