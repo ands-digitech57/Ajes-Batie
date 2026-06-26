@@ -19,7 +19,7 @@
             <li><a href="{% url 'journal:list' %}">📰 Journal</a></li>
             <li><a href="{% url 'accounts:notifications' %}">🔔 Notifications</a></li>
             {% if user.is_staff %}
-                <li><a href="{% url 'journal:create' %}">✍️ Publier</a></li>
+                 <li><a href="{% url 'journal:post_create' %}">✍️ Publier</a></li>
             {% endif %}
         </ul>
     </aside>
