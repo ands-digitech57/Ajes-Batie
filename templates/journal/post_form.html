@@ -48,6 +48,7 @@
         color: #334155;
     }
     
+    /* Ciblage explicite des widgets générés par Django */
     .form-group input,
     .form-group select,
     .form-group textarea {
@@ -69,7 +70,9 @@
         box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12) !important;
     }
     
-    .form-group input[type="file"] {
+    /* Style ajusté pour le widget d'upload de fichiers Cloudinary/Django */
+    .form-group input[type="file"], 
+    .form-group file {
         padding: 10px !important;
         background: #f8fafc !important;
         border: 1px dashed #cbd5e1 !important;
@@ -144,7 +147,7 @@
         {% endif %}
 
         {% for field in form %}
-            {% if field.field.widget.input_type == "checkbox" %}
+            {% if "checkbox" in field.field.widget.attrs.class or field.field.widget.input_type == "checkbox" %}
                 <div class="form-group-checkbox">
                     {{ field }}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>

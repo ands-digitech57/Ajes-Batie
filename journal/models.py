@@ -2,6 +2,7 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from cloudinary.models import CloudinaryField  # Importation essentielle
 
 class JournalPost(models.Model):
     CATEGORY_CHOICES = [

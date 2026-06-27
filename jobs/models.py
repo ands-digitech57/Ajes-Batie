@@ -1,5 +1,6 @@
 ﻿from django.db import models
 from django.urls import reverse
+from cloudinary.models import CloudinaryField  # Importation essentielle
 
 class JobOffer(models.Model):
     CONTRACT_CHOICES = [
