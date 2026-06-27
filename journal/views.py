@@ -11,8 +11,8 @@ from .forms import JournalPostCommentForm, JournalPostForm
 from .models import JournalPost, JournalPostComment, JournalPostLike
 
 def post_list(request):
-    """Affiche la liste de toutes les publications avec leurs médias liés de manière sécurisée."""
-    posts = JournalPost.objects.filter(is_published=True).prefetch_related('media_items')
+    """Affiche la liste de toutes les publications de manière sécurisée."""
+    posts = JournalPost.objects.filter(is_published=True).order_by('-created_at')
     return render(request, 'journal/post_list.html', {'posts': posts})
 
 def post_detail(request, slug):
@@ -69,8 +69,6 @@ def post_create(request):
                 
                 post.slug = slug
                 post.save()
-                
-                # Sauvegarde des relations Many-to-Many et fichiers
                 form.save_m2m()
                 
                 # Système de notification isolé

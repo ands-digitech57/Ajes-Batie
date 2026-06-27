@@ -136,7 +136,6 @@
         margin-bottom: 22px !important;
     }
 
-    /* ZONE MÉDIAS UNIFIÉE */
     .post-media-wrapper {
         margin: 20px -28px 24px -28px !important;
         background-color: #0f172a !important;
@@ -165,34 +164,6 @@
         max-height: 420px !important;
         display: block !important;
         outline: none !important;
-    }
-
-    /* MINI MOSAÏQUE POUR ALBUM SECONDAIRE */
-    .media-gallery-grid {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)) !important;
-        gap: 2px !important;
-        background: #0f172a !important;
-        border-top: 2px solid #ffffff !important;
-    }
-    
-    .gallery-item-wrapper {
-        height: 100px !important;
-        overflow: hidden !important;
-        position: relative !important;
-    }
-    
-    .gallery-item-wrapper img, 
-    .gallery-item-wrapper video {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-        display: block !important;
-        opacity: 0.9;
-        transition: opacity 0.2s;
-    }
-    .gallery-item-wrapper:hover img {
-        opacity: 1;
     }
 
     .post-footer-meta {
@@ -263,7 +234,7 @@
                 <p>{{ post.summary|default:post.content|truncatewords:45 }}</p>
             </div>
             
-            {% if post.video_file or post.image_file or post.image_url or post.media_items.all %}
+            {% if post.image_file or post.video_file %}
                 <div class="post-media-wrapper">
                     {% if post.video_file %}
                         <div class="media-holder">
@@ -272,26 +243,6 @@
                     {% elif post.image_file %}
                         <div class="media-holder">
                             <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
-                        </div>
-                    {% elif post.image_url %}
-                        <div class="media-holder">
-                            <img src="{{ post.image_url }}" alt="{{ post.title }}">
-                        </div>
-                    {% endif %}
-
-                    {% if post.media_items.all %}
-                        <div class="media-gallery-grid">
-                            {% for item in post.media_items.all %}
-                                {% if item.file or item.external_url %}
-                                    <div class="gallery-item-wrapper">
-                                        {% if item.media_type == 'image' %}
-                                            <img src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}" alt="Galerie">
-                                        {% elif item.media_type == 'video' %}
-                                            <video controls playsinline preload="metadata" src="{% if item.file %}{{ item.file.url }}{% else %}{{ item.external_url }}{% endif %}"></video>
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
                         </div>
                     {% endif %}
                 </div>

@@ -2,7 +2,7 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
-from cloudinary.models import CloudinaryField  # Importation essentielle
+from cloudinary.models import CloudinaryField  
 
 class JournalPost(models.Model):
     CATEGORY_CHOICES = [
@@ -19,8 +19,11 @@ class JournalPost(models.Model):
     summary = models.TextField(blank=True)
     content = models.TextField()
     image_url = models.URLField(blank=True)
-    image_file = models.FileField(upload_to='journal_images/', null=True, blank=True)
-    video_file = models.FileField(upload_to='journal_videos/', null=True, blank=True)
+    
+    # FIX : Le premier texte sert directement de description/verbose_name pour Cloudinary
+    image_file = CloudinaryField("Image d'illustration", blank=True, null=True)
+    video_file = CloudinaryField("Capsule vidéo", resource_type='video', blank=True, null=True)
+    
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='activity')
     event_date = models.DateField(null=True, blank=True)
     is_published = models.BooleanField(default=True)
@@ -45,7 +48,6 @@ class JournalPost(models.Model):
         super().save(*args, **kwargs)
 
 
-# NOUVEAU MODÈLE MULTI-MÉDIAS (ALBUMS PHOTOS ET VIDÉOS ACCESSIBLES PAR TON ADMIN)
 class JournalPostMedia(models.Model):
     MEDIA_TYPES = (
         ('image', 'Image'),
@@ -53,7 +55,10 @@ class JournalPostMedia(models.Model):
     )
     post = models.ForeignKey(JournalPost, on_delete=models.CASCADE, related_name='media_items', verbose_name="Publication")
     media_type = models.CharField(max_length=10, choices=MEDIA_TYPES, default='image', verbose_name="Type de média")
-    file = models.FileField(upload_to='journal_gallery/', blank=True, null=True, verbose_name="Fichier")
+    
+    # FIX : Même chose ici pour le champ de la galerie
+    file = CloudinaryField("Fichier Média", resource_type='auto', blank=True, null=True)
+    
     external_url = models.URLField(blank=True, null=True, verbose_name="Lien URL Externe")
     created_at = models.DateTimeField(auto_now_add=True)
 
