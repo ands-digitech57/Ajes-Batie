@@ -24,15 +24,12 @@
                     {% endif %}
 
                     <div class="d-md-flex align-items-start gap-4 text-center text-md-start">
-                        <!-- Photo de Profil -->
+                        <!-- Photo de Profil (Correction appliquée ici via get_avatar_url) -->
                         <div class="mb-3 mb-md-0 d-inline-block">
-                            {% if profile.photo_file %}
-                                <img class="rounded-circle shadow-lg border border-4 border-white object-fit-cover" src="{{ profile.photo_file.url }}" alt="Photo de {{ profile.display_name }}" style="width: 140px; height: 140px;">
-                            {% elif profile.photo_url %}
-                                <img class="rounded-circle shadow-lg border border-4 border-white object-fit-cover" src="{{ profile.photo_url }}" alt="Photo de {{ profile.display_name }}" style="width: 140px; height: 140px;">
-                            {% else %}
-                                <div class="rounded-circle shadow-lg border border-4 border-white d-flex align-items-center justify-content-center text-white" style="width: 140px; height: 140px; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); font-size: 3.5rem; margin: 0 auto;">👤</div>
-                            {% endif %}
+                            <img class="rounded-circle shadow-lg border border-4 border-white object-fit-cover" 
+                                 src="{{ profile.get_avatar_url }}" 
+                                 alt="Photo de {{ profile.display_name }}" 
+                                 style="width: 140px; height: 140px;">
                         </div>
 
                         <!-- Informations principales -->

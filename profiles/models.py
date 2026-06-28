@@ -15,7 +15,6 @@ class Skill(models.Model):
 
 
 class Profile(models.Model):
-    # Classe interne TextChoices parfaitement indentée à 4 espaces
     class Status(models.TextChoices):
         AVAILABLE = "available", "Disponible"
         EMPLOYED = "employed", "En activité"
@@ -28,18 +27,15 @@ class Profile(models.Model):
     industry = models.CharField(max_length=120, blank=True)
     bio = models.TextField(blank=True)
     skills = models.ManyToManyField(Skill, related_name="profiles", blank=True)
-    
-    # Utilisation propre de Status.choices maintenant qu'il est bien déclaré au-dessus
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.AVAILABLE)
-    
     education_level = models.CharField(max_length=120, blank=True)
     location = models.CharField(max_length=120, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     whatsapp = models.CharField(max_length=30, blank=True)
     linkedin_url = models.URLField(blank=True)
     
-    # Stockage Cloudinary permanent pour la photo de profil
-    photo_file = CloudinaryField('image', default='default_avatar.png', blank=True, null=True)
+    # Correction : Champ Cloudinary initialisé proprement pour l'image
+    photo_file = CloudinaryField('image', blank=True, null=True)
     
     cv_file = models.FileField(upload_to='cvs/', blank=True, null=True, validators=[validate_cv_file])
     photo_url = models.URLField(blank=True)
@@ -61,6 +57,15 @@ class Profile(models.Model):
     @property
     def public_phone(self):
         return self.whatsapp or self.phone
+
+    # Code Sécurisé : Retourne l'URL Cloudinary ou un avatar UI gratuit si vide
+    @property
+    def get_avatar_url(self):
+        if self.photo_file and hasattr(self.photo_file, 'url'):
+            return self.photo_file.url
+        elif self.photo_url:
+            return self.photo_url
+        return f"https://ui-avatars.com/api/?name={self.display_name}&background=10b981&color=fff"
 
     def get_absolute_url(self):
         return reverse('profiles:detail', kwargs={'pk': self.pk})

@@ -55,11 +55,20 @@
         overflow: hidden;
         background: #0f172a;
     }
-    .detail-media-box img, .detail-media-box video {
+    .detail-media-box img {
         width: 100%;
         display: block;
         max-height: 480px;
         object-fit: cover;
+    }
+
+    /* FIX : Rendu vidéo de face parfait sans rognage */
+    .detail-media-box video {
+        width: 100%;
+        display: block;
+        max-height: 480px;
+        object-fit: contain;
+        background-color: #000000;
     }
     
     .lead-text {

@@ -166,6 +166,7 @@ LOGOUT_REDIRECT_URL = 'core:home'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
+    'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL', 'cloudinary://962766849786186:B3QKogN_u--pcTzAe1zI4OvyJes@dnaui2bjg'),
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'dnaui2bjg'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '962766849786186'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'B3QKogN_u--pcTzAe1zI4OvyJes'),

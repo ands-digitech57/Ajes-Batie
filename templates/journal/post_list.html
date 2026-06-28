@@ -159,11 +159,14 @@
         display: block !important;
     }
     
+    /* FIX : Rendu de face parfait pour la vidéo sans rognage */
     .media-holder video {
         width: 100% !important;
         max-height: 420px !important;
         display: block !important;
         outline: none !important;
+        object-fit: contain !important; 
+        background-color: #000000 !important;
     }
 
     .post-footer-meta {
