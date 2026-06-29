@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from .env in project root if present
+# Load environment variables from .env in project root if present (Local only)
 load_dotenv(BASE_DIR / '.env')
 
 
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     
-    # Stockage Cloudinary (Doit impÃ©rativement Ãªtre AVANT staticfiles)
+    # Stockage Cloudinary (Doit impérativement être AVANT staticfiles)
     'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
@@ -148,14 +148,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 STORAGES = {
     'default': {
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
     },
     'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        'BACKEND': 'whitenoise.storage.StaticFilesStorage',
     },
 }
 
@@ -173,24 +173,25 @@ LOGOUT_REDIRECT_URL = 'core:home'
 
 
 # ==============================================================================
-# STRATÃ‰GIE DE STOCKAGE MÃ‰DIA (100% CLOUDINARY EXCLUSIF)
+# STRATÉGIE DE STOCKAGE MÉDIA (100% CLOUDINARY EXCLUSIF)
 # ==============================================================================
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# RÃ©cupÃ©ration de l'URL brute ou construction pas Ã  pas
-CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL', 'cloudinary://962766849786186:B3QKogN_u--pcTzAe1zI4OvyJes@dnaui2bjg')
+# Récupération stricte de la variable d'environnement système pour la production
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
-CLOUDINARY_STORAGE = {
-    'CLOUDINARY_URL': CLOUDINARY_URL,
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'dnaui2bjg'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '962766849786186'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'B3QKogN_u--pcTzAe1zI4OvyJes'),
-}
-
-# Initialisation obligatoire du SDK brut Python pour Ã©viter l'erreur "Must supply api_key"
+# Si Render ne fournit pas CLOUDINARY_URL, on construit la config ou on prend la clé locale de repli
 if CLOUDINARY_URL:
     cloudinary.config(cloudinary_url=CLOUDINARY_URL)
+    CLOUDINARY_STORAGE = {
+        'CLOUDINARY_URL': CLOUDINARY_URL
+    }
 else:
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'dnaui2bjg'),
+        'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '962766849786186'),
+        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'B3QKogN_u--pcTzAe1zI4OvyJes'),
+    }
     cloudinary.config(
         cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
         api_key=CLOUDINARY_STORAGE['API_KEY'],
