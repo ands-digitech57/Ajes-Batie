@@ -237,21 +237,7 @@
                 <p>{{ post.summary|default:post.content|truncatewords:45 }}</p>
             </div>
             
-            {% if post.image_file or post.video_file %}
-                <div class="post-media-wrapper">
-                    {% if post.video_file %}
-                        <div class="media-holder">
-                            <video controls playsinline preload="metadata" src="{{ post.video_file.url }}"></video>
-                        </div>
-                    {% elif post.image_file %}
-                        <div class="media-holder">
-                            <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}            
-            
-            <div class="post-footer-meta">
+            {% if post.video_url_safe or post.image_url_safe %}<div class="post-media-wrapper">{% if post.video_url_safe %}<div class="media-holder"><video controls playsinline preload="metadata" src="{{ post.video_url_safe }}"></video></div>{% elif post.image_url_safe %}<div class="media-holder"><img src="{{ post.image_url_safe }}" alt="{{ post.title }}"></div>{% endif %}</div>{% endif %}`r`n            <div class="post-footer-meta">
                 <span>❤️ {{ post.likes.all|length|default:"0" }} mention{% if post.likes.all|length != 1 %}s{% endif %} J'aime</span>
                 {% if post.event_date %}<span>📅 Événement : {{ post.event_date|date:'d/m/Y' }}</span>{% endif %}
             </div>

@@ -9,7 +9,7 @@
         <h1>{{ job.title }}</h1>
         <p class="lead">{{ job.company_name }}{% if job.location %} - {{ job.location }}{% endif %}</p>
 
-        <h2>Description</h2>
+        {% if job.image_url_safe %}<div class="detail-media-box"><img src="{{ job.image_url_safe }}" alt="{{ job.title }}"></div>{% endif %}{% if job.video_url_safe %}<div class="detail-media-box"><video controls src="{{ job.video_url_safe }}"></video></div>{% endif %}`r`n`r`n        <h2>Description</h2>
         <p>{{ job.description|linebreaksbr }}</p>
 
         {% if job.required_skills %}
@@ -41,3 +41,4 @@
     </aside>
 </section>
 {% endblock %}
+

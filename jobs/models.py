@@ -1,6 +1,8 @@
 ﻿from django.db import models
 from django.urls import reverse
-from cloudinary.models import CloudinaryField  # Importation essentielle
+from cloudinary.models import CloudinaryField
+from profiles.models import safe_file_url
+
 
 class JobOffer(models.Model):
     CONTRACT_CHOICES = [
@@ -21,11 +23,8 @@ class JobOffer(models.Model):
     location = models.CharField(max_length=140, blank=True)
     contract_type = models.CharField(max_length=30, choices=CONTRACT_CHOICES, default='mission')
     required_skills = models.TextField(blank=True)
-    
-    # NOUVEAUX CHAMPS MÉDIAS POUR LES OFFRES
-    image_file = models.ImageField(upload_to='job_images/', null=True, blank=True)
-    video_file = models.FileField(upload_to='job_videos/', null=True, blank=True)
-    
+    image_file = CloudinaryField('Image de l\'offre', blank=True, null=True)
+    video_file = CloudinaryField('Vidéo de l\'offre', resource_type='video', blank=True, null=True)
     deadline = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -35,6 +34,14 @@ class JobOffer(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def image_url_safe(self):
+        return safe_file_url(self.image_file)
+
+    @property
+    def video_url_safe(self):
+        return safe_file_url(self.video_file)
 
     def get_absolute_url(self):
         return reverse('jobs:detail', kwargs={'pk': self.pk})

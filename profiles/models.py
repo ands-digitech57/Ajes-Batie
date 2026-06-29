@@ -1,8 +1,42 @@
-﻿from django.contrib.auth.models import User
+﻿from pathlib import Path
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
 from .validators import validate_cv_file
+
+
+def safe_file_url(file_value):
+    if file_value is None:
+        return ''
+    raw_value = None
+    for attr in ('public_id', 'name'):
+        try:
+            raw_value = getattr(file_value, attr, None)
+        except Exception:
+            raw_value = None
+        if raw_value:
+            break
+    if not raw_value:
+        try:
+            raw_value = str(file_value)
+        except Exception:
+            raw_value = ''
+    if not raw_value or raw_value == 'None':
+        return ''
+
+    raw_text = str(raw_value).replace('\\', '/')
+    if not raw_text.startswith(('http://', 'https://')):
+        local_path = Path(settings.MEDIA_ROOT) / raw_text
+        if local_path.exists():
+            return f"{settings.MEDIA_URL}{raw_text}"
+
+    try:
+        return file_value.url
+    except Exception:
+        return ''
+
 
 class Skill(models.Model):
     name = models.CharField(max_length=80, unique=True)
@@ -33,10 +67,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length=30, blank=True)
     whatsapp = models.CharField(max_length=30, blank=True)
     linkedin_url = models.URLField(blank=True)
-    
-    # Correction : Champ Cloudinary initialisé proprement pour l'image
     photo_file = CloudinaryField('image', blank=True, null=True)
-    
     cv_file = models.FileField(upload_to='cvs/', blank=True, null=True, validators=[validate_cv_file])
     photo_url = models.URLField(blank=True)
     email = models.EmailField(blank=True)
@@ -58,14 +89,17 @@ class Profile(models.Model):
     def public_phone(self):
         return self.whatsapp or self.phone
 
-    # Code Sécurisé : Retourne l'URL Cloudinary ou un avatar UI gratuit si vide
+    @property
+    def uploaded_photo_url(self):
+        return safe_file_url(self.photo_file)
+
+    @property
+    def cv_url_safe(self):
+        return safe_file_url(self.cv_file)
+
     @property
     def get_avatar_url(self):
-        if self.photo_file and hasattr(self.photo_file, 'url'):
-            return self.photo_file.url
-        elif self.photo_url:
-            return self.photo_url
-        return f"https://ui-avatars.com/api/?name={self.display_name}&background=10b981&color=fff"
+        return self.uploaded_photo_url or self.photo_url or f"https://ui-avatars.com/api/?name={self.display_name}&background=10b981&color=fff"
 
     def get_absolute_url(self):
         return reverse('profiles:detail', kwargs={'pk': self.pk})

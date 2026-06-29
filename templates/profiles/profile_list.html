@@ -41,15 +41,7 @@
                             
                             <!-- GAUCHE : La Photo -->
                             <div style="width: 70px; height: 70px; min-width: 70px; max-width: 70px; border-radius: 50%; overflow: hidden; border: 2px solid #f3f4f6; background-color: #f3f4f6;">
-                                {% if profile.photo_file %}
-                                    <img src="{{ profile.photo_file.url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                {% elif profile.photo_url %}
-                                    <img src="{{ profile.photo_url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                {% else %}
-                                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); color: white; font-weight: 700; font-size: 1.4rem;">
-                                        {{ profile.display_name|slice:":1"|upper }}
-                                    </div>
-                                {% endif %}
+                                <img src="{{ profile.get_avatar_url }}" alt="{{ profile.display_name }}" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
 
                             <!-- DROITE : Nom, Métier et Localisation -->

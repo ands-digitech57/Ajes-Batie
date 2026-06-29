@@ -248,15 +248,7 @@
     {% for job in jobs %}
         <article class="job-card">
             
-            {% if job.image_file %}
-                <div class="job-media-box">
-                    <img src="{{ job.image_file.url }}" alt="{{ job.title }}">
-                </div>
-            {% elif job.video_file %}
-                <div class="job-media-box">
-                    <video src="{{ job.video_file.url }}" muted autoplay loop playsinline></video>
-                </div>
-            {% endif %}
+            {% if job.image_url_safe %}<div class="job-media-box"><img src="{{ job.image_url_safe }}" alt="{{ job.title }}"></div>{% elif job.video_url_safe %}<div class="job-media-box"><video src="{{ job.video_url_safe }}" muted autoplay loop playsinline></video></div>{% endif %}
             
             <div class="job-card-body">
                 <p class="eyebrow">💼 {{ job.get_contract_type_display }}</p>

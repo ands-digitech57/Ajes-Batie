@@ -8,7 +8,7 @@
         <p class="eyebrow">Recruteur</p>
         <h1>Publier une offre</h1>
         <p>Remplissez le formulaire. L'offre sera visible automatiquement.</p>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% if form.errors %}
                 <div class="alert alert-danger">
@@ -26,3 +26,4 @@
     </div>
 </section>
 {% endblock %}
+

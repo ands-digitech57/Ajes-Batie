@@ -203,21 +203,9 @@
             </div>
         </header>
 
-        {% if post.image_file %}
-            <div class="detail-media-box">
-                <img src="{{ post.image_file.url }}" alt="{{ post.title }}">
-            </div>
-        {% elif post.image_url %}
-            <div class="detail-media-box">
-                <img src="{{ post.image_url }}" alt="{{ post.title }}">
-            </div>
-        {% endif %}
+        {% if post.image_url_safe %}<div class="detail-media-box"><img src="{{ post.image_url_safe }}" alt="{{ post.title }}"></div>{% endif %}
 
-        {% if post.video_file %}
-            <div class="detail-media-box">
-                <video controls src="{{ post.video_file.url }}"></video>
-            </div>
-        {% endif %}
+        {% if post.video_url_safe %}<div class="detail-media-box"><video controls src="{{ post.video_url_safe }}"></video></div>{% endif %}
 
         {% if post.summary %}
             <p class="lead-text">{{ post.summary }}</p>

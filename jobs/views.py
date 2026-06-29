@@ -1,4 +1,4 @@
-from django.contrib import messages
+﻿from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
@@ -49,27 +49,27 @@ def job_detail(request, pk):
 @login_required
 def job_create(request):
     if not request.user.is_staff:
-        messages.error(request, "Vous n'êtes pas autorisé à publier des offres.")
+        messages.error(request, "Vous n'Ãªtes pas autorisÃ© Ã  publier des offres.")
         return redirect("jobs:list")
 
     if request.method == "POST":
-        form = JobOfferForm(request.POST)
+        form = JobOfferForm(request.POST, request.FILES)
         if form.is_valid():
             with transaction.atomic():
-                # 1. On prépare la sauvegarde sans envoyer immédiatement en base de données
+                # 1. On prÃ©pare la sauvegarde sans envoyer immÃ©diatement en base de donnÃ©es
                 job = form.save(commit=False)
                 
-                # 2. Sécurité : Si votre modèle JobOffer requiert un slug, on le génère ici
+                # 2. SÃ©curitÃ© : Si votre modÃ¨le JobOffer requiert un slug, on le gÃ©nÃ¨re ici
                 if hasattr(job, 'slug') and not job.slug:
                     job.slug = slugify(job.title)
                 
-                # 3. Sécurité : Si votre modèle JobOffer a un champ 'author' ou 'user', on l'associe
+                # 3. SÃ©curitÃ© : Si votre modÃ¨le JobOffer a un champ 'author' ou 'user', on l'associe
                 if hasattr(job, 'author'):
                     job.author = request.user
                 elif hasattr(job, 'user'):
                     job.user = request.user
 
-                # 4. On enregistre définitivement l'offre en base de données
+                # 4. On enregistre dÃ©finitivement l'offre en base de donnÃ©es
                 job.save()
                 form.save_m2m()  # Important si vous avez des champs ManyToMany
 
@@ -79,18 +79,18 @@ def job_create(request):
                     Notification(
                         user=user,
                         title="Nouvelle offre d'emploi",
-                        message=f"Une nouvelle offre '{job.title}' a été publiée.",
+                        message=f"Une nouvelle offre '{job.title}' a Ã©tÃ© publiÃ©e.",
                         link=job.get_absolute_url(),
                         type="job",
                     )
                     for user in recipients
                 ])
 
-            messages.success(request, "Votre offre a été publiée.")
+            messages.success(request, "Votre offre a Ã©tÃ© publiÃ©e.")
             return redirect(job)
         else:
-            # Si le formulaire n'est pas valide, on prévient l'admin par un message
-            messages.error(request, "Le formulaire contient des erreurs. Veuillez vérifier les champs.")
+            # Si le formulaire n'est pas valide, on prÃ©vient l'admin par un message
+            messages.error(request, "Le formulaire contient des erreurs. Veuillez vÃ©rifier les champs.")
     else:
         form = JobOfferForm()
 
@@ -125,4 +125,5 @@ def job_apply(request, pk):
         'job': job,
         'profile': profile,
     })
+
 
