@@ -23,71 +23,77 @@
                         </a>
                     {% endif %}
 
-                    <div class="d-md-flex align-items-start gap-4 text-center text-md-start">
-                        <!-- Photo de Profil (Correction appliquée ici via get_avatar_url) -->
-                        <div class="mb-3 mb-md-0 d-inline-block">
+                    <!-- Structure responsive : photo à gauche, nom à droite -->
+                    <div class="d-md-flex align-items-center gap-4 text-center text-md-start">
+                        <!-- Photo de Profil -->
+                        <div class="mb-3 mb-md-0 d-inline-block flex-shrink-0">
                             <img class="rounded-circle shadow-lg border border-4 border-white object-fit-cover" 
                                  src="{{ profile.get_avatar_url }}" 
                                  alt="Photo de {{ profile.display_name }}" 
-                                 style="width: 140px; height: 140px;">
+                                 style="width: 130px; height: 130px;">
                         </div>
 
-                        <!-- Informations principales -->
-                        <div class="profile-summary flex-grow-1 mt-2">
-                            <span class="badge bg-light text-success mb-2 px-3 py-2 rounded-pill fw-bold border" style="font-size: 0.85rem;">
-                                🎯 {{ profile.get_status_display }}
-                            </span>
-                            <h1 class="fw-bold h2 mb-1" style="color: #1f2937;">{{ profile.display_name }}</h1>
-                            <p class="lead text-secondary fw-medium mb-3" style="font-size: 1.1rem;">{{ profile.job_title|default:'Profil professionnel' }}</p>
-                            
-                            <!-- Grille des métadonnées pro -->
-                            <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start pt-2 border-top">
-                                {% if profile.current_company %}
-                                    <div class="bg-light px-3 py-2 rounded-3">
-                                        <p class="text-muted small mb-0">Entreprise</p>
-                                        <p class="fw-bold mb-0" style="color: #374151;">🏢 {{ profile.current_company }}</p>
-                                    </div>
-                                {% endif %}
-                                {% if profile.industry %}
-                                    <div class="bg-light px-3 py-2 rounded-3">
-                                        <p class="text-muted small mb-0">Secteur</p>
-                                        <p class="fw-bold mb-0" style="color: #374151;">📊 {{ profile.industry }}</p>
-                                    </div>
-                                {% endif %}
-                                {% if profile.location %}
-                                    <div class="bg-light px-3 py-2 rounded-3">
-                                        <p class="text-muted small mb-0">Localisation</p>
-                                        <p class="fw-bold mb-0" style="color: #374151;">📍 {{ profile.location }}</p>
-                                    </div>
-                                {% endif %}
+                        <!-- Informations principales alignées à droite de la photo -->
+                        <div class="profile-summary flex-grow-1">
+                            <!-- Badge unique de statut : bien visible et présentable sous le nom -->
+                            <div class="mb-2">
+                                <span class="badge bg-light text-success px-3 py-2 rounded-pill fw-bold border" style="font-size: 0.85rem; border-color: #b2dfdb !important;">
+                                    ✅ {{ profile.get_status_display }}
+                                </span>
                             </div>
+                            
+                            <h1 class="fw-bold h3 mb-1" style="color: #1f2937;">{{ profile.display_name }}</h1>
+                            <p class="lead text-secondary fw-medium mb-0" style="font-size: 1.05rem;">{{ profile.job_title|default:'Profil professionnel' }}</p>
                         </div>
                     </div>
+
+                    <!-- Grille des métadonnées pro (Localisation, Entreprise...) -->
+                    <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start pt-3 mt-4 border-top">
+                        {% if profile.location %}
+                            <div class="bg-light px-3 py-2 rounded-3">
+                                <small class="text-muted d-block" style="font-size: 0.8rem;">Localisation</small>
+                                <span class="fw-bold" style="color: #374151; font-size: 0.95rem;">📍 {{ profile.location }}</span>
+                            </div>
+                        {% endif %}
+                        {% if profile.current_company %}
+                            <div class="bg-light px-3 py-2 rounded-3">
+                                <small class="text-muted d-block" style="font-size: 0.8rem;">Entreprise</small>
+                                <span class="fw-bold" style="color: #374151; font-size: 0.95rem;">🏢 {{ profile.current_company }}</span>
+                            </div>
+                        {% endif %}
+                        {% if profile.industry %}
+                            <div class="bg-light px-3 py-2 rounded-3">
+                                <small class="text-muted d-block" style="font-size: 0.8rem;">Secteur</small>
+                                <span class="fw-bold" style="color: #374151; font-size: 0.95rem;">📊 {{ profile.industry }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
                 </div>
             </div>
 
             <!-- À propos / Bio -->
             {% if profile.bio %}
                 <div class="card shadow-sm border-0 rounded-4 mb-4 p-4 p-md-5">
-                    <h3 class="fw-bold h4 mb-4" style="color: #374151;">
+                    <h3 class="fw-bold h5 mb-3" style="color: #374151;">
                         <span class="me-2" style="color: #10b981;">📄</span> À propos
                     </h3>
-                    <p class="text-muted" style="line-height: 1.7; font-size: 1.05rem;">
+                    <p class="text-muted mb-0" style="line-height: 1.7; font-size: 1rem;">
                         {{ profile.bio|linebreaksbr }}
                     </p>
                 </div>
             {% endif %}
 
-            <!-- Compétences (Tags Modernisés) -->
+            <!-- Compétences -->
             <div class="card shadow-sm border-0 rounded-4 mb-4 p-4 p-md-5">
-                <h3 class="fw-bold h4 mb-4" style="color: #374151;">
+                <h3 class="fw-bold h5 mb-3" style="color: #374151;">
                     <span class="me-2" style="color: #3b82f6;">⚡</span> Compétences
                 </h3>
                 <div class="d-flex flex-wrap gap-2">
                     {% for skill in profile.skills.all %}
-                        <span class="badge bg-light text-dark border px-3 py-2 rounded-3 fw-medium" style="font-size: 0.95rem;">{{ skill.name }}</span>
+                        <span class="badge bg-light text-dark border px-3 py-2 rounded-3 fw-medium" style="font-size: 0.9rem;">{{ skill.name }}</span>
                     {% empty %}
-                        <span class="text-muted italic">Aucune compétence renseignée pour le moment.</span>
+                        <span class="text-muted fst-italic small">Aucune compétence renseignée pour le moment.</span>
                     {% endfor %}
                 </div>
             </div>
@@ -102,40 +108,40 @@
                 
                 <div class="d-flex flex-column gap-3">
                     {% if profile.public_phone %}
-                        <div class="d-flex align-items-start gap-3">
+                        <div class="d-flex align-items-center gap-3">
                             <span style="font-size: 1.2rem;">📱</span>
                             <div>
-                                <small class="text-muted d-block">Téléphone</small>
+                                <small class="text-muted d-block" style="font-size: 0.8rem;">Téléphone</small>
                                 <a href="tel:{{ profile.public_phone }}" class="fw-bold text-decoration-none" style="color: #4b5563;">{{ profile.public_phone }}</a>
                             </div>
                         </div>
                     {% endif %}
 
                     {% if profile.email %}
-                        <div class="d-flex align-items-start gap-3">
+                        <div class="d-flex align-items-center gap-3">
                             <span style="font-size: 1.2rem;">✉️</span>
                             <div>
-                                <small class="text-muted d-block">Email</small>
-                                <a href="mailto:{{ profile.email }}" class="fw-bold text-decoration-none" style="color: #4b5563;">{{ profile.email }}</a>
+                                <small class="text-muted d-block" style="font-size: 0.8rem;">Email</small>
+                                <a href="mailto:{{ profile.email }}" class="fw-bold text-decoration-none" style="color: #4b5563; word-break: break-all;">{{ profile.email }}</a>
                             </div>
                         </div>
                     {% endif %}
 
                     {% if profile.linkedin_url %}
-                        <div class="d-flex align-items-start gap-3">
+                        <div class="d-flex align-items-center gap-3">
                             <span style="font-size: 1.2rem;">🔗</span>
                             <div>
-                                <small class="text-muted d-block">LinkedIn</small>
-                                <a href="{{ profile.linkedin_url }}" target="_blank" class="fw-bold text-primary text-decoration-none">Voir le profil LinkedIn →</a>
+                                <small class="text-muted d-block" style="font-size: 0.8rem;">LinkedIn</small>
+                                <a href="{{ profile.linkedin_url }}" target="_blank" class="fw-bold text-primary text-decoration-none" style="font-size: 0.95rem;">Voir le profil LinkedIn →</a>
                             </div>
                         </div>
                     {% endif %}
 
                     {% if profile.cv_file %}
-                        <div class="d-flex align-items-start gap-3 border-top pt-2 mt-2">
+                        <div class="d-flex align-items-center gap-3 border-top pt-3 mt-2">
                             <span style="font-size: 1.2rem;">💼</span>
                             <div class="w-100">
-                                <small class="text-muted d-block mb-1">Curriculum Vitae</small>
+                                <small class="text-muted d-block mb-1" style="font-size: 0.8rem;">Curriculum Vitae</small>
                                 <a href="{{ profile.cv_file.url }}" target="_blank" download class="btn btn-outline-dark btn-sm w-100 rounded-3 fw-bold">
                                     📄 Télécharger le CV
                                 </a>
@@ -155,19 +161,13 @@
             </div>
 
             <!-- Bloc Formation -->
-            <div class="card shadow-sm border-0 rounded-4 mb-4 p-4">
+            <div class="card shadow-sm border-0 rounded-4 p-4">
                 <h3 class="fw-bold h5 mb-3 border-bottom pb-2" style="color: #374151;">🎓 Formation</h3>
                 {% if profile.education_level %}
-                    <p class="fw-medium mb-0" style="color: #4b5563; font-size: 1.05rem;">{{ profile.education_level }}</p>
+                    <p class="fw-medium mb-0" style="color: #4b5563; font-size: 1rem;">{{ profile.education_level }}</p>
                 {% else %}
-                    <p class="text-muted mb-0 small italic">Non renseignée</p>
+                    <p class="text-muted mb-0 small fst-italic">Non renseignée</p>
                 {% endif %}
-            </div>
-
-            <!-- Bloc Statut Badge -->
-            <div class="card shadow-sm border-0 rounded-4 p-4 text-center text-white" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);">
-                <small class="text-white-50 d-block text-uppercase fw-bold tracking-wider mb-1" style="font-size: 0.75rem;">Vérification</small>
-                <span class="fw-bold h5 mb-0">✅ {{ profile.get_status_display }}</span>
             </div>
 
         </div>

@@ -29,3 +29,6 @@ db.sqlite3
 *.egg-info/
 build/
 dist/
+
+# Collected static files
+staticfiles/
